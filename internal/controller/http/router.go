@@ -12,8 +12,8 @@ import (
 	"github.com/ninehills/go-webapp-template/internal/service"
 	"github.com/ninehills/go-webapp-template/pkg/logger"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
 
 // NewRouter -.
