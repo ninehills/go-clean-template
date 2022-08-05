@@ -1,0 +1,76 @@
+package http
+
+import (
+	"context"
+	"fmt"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/ninehills/go-webapp-template/internal/entity"
+	"github.com/ninehills/go-webapp-template/internal/infra/dependency"
+	"github.com/ninehills/go-webapp-template/internal/infra/middleware"
+	"github.com/ninehills/go-webapp-template/internal/service"
+	"github.com/ninehills/go-webapp-template/pkg/logger"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
+)
+
+// NewRouter -.
+// Swagger spec:
+// @title       GO WEBAPP TEMPLATE API
+// @description GO WEBAPP TEMPLATE API
+// @version     1.0
+// @host        localhost:8080
+// @BasePath    /
+func NewRouter(handler *gin.Engine, deps *dependency.Dependency) {
+	// Options
+	handler.Use(gin.Logger())
+	handler.Use(gin.Recovery())
+
+	// Swagger
+	swaggerHandler := ginSwagger.DisablingWrapHandler(swaggerFiles.Handler, "DISABLE_SWAGGER_HTTP_HANDLER")
+	handler.GET("/swagger/*any", swaggerHandler)
+
+	// K8s probe
+	handler.GET("/healthz", func(c *gin.Context) { c.Status(http.StatusOK) })
+
+	// Prometheus metrics
+	handler.GET("/metrics", gin.WrapH(promhttp.Handler()))
+
+	// 创建所有 Service
+	svcs := service.NewServices(deps)
+
+	// 创建非全局的 middleware
+	middlewares := middleware.NewMiddlewares(deps)
+
+	// Init default user
+	InitDefaultUser(deps.Logger, svcs.User, deps.Config.App.SuperUser, deps.Config.App.SuperPassword)
+
+	l := deps.Logger
+
+	// Routers
+
+	// v1 API
+	v1 := handler.Group("/v1")
+	{
+		newUserRoutes(v1, l, svcs, middlewares)
+	}
+}
+
+func InitDefaultUser(l *logger.Logger, user service.User, username string, password string) {
+	_, err := user.Get(context.Background(), username)
+	if err != nil {
+		l.Info().Msgf("Init default user %s", username)
+		_, err := user.Create(context.Background(), entity.User{
+			Username:    username,
+			Password:    password,
+			Email:       fmt.Sprintf("%s@example.com", username),
+			Status:      entity.UserStatusActive,
+			Description: "Default created super user",
+		})
+		if err != nil {
+			l.Fatal().Err(err).Msg("Init default user failed")
+		}
+	}
+}

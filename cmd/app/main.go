@@ -1,19 +1,28 @@
 package main
 
 import (
-	"log"
+	"flag"
+	"fmt"
+	"os"
 
-	"github.com/evrone/go-clean-template/config"
-	"github.com/evrone/go-clean-template/internal/app"
+	"github.com/ninehills/go-webapp-template/internal/app"
+	"github.com/ninehills/go-webapp-template/pkg/version"
 )
 
-func main() {
-	// Configuration
-	cfg, err := config.NewConfig()
-	if err != nil {
-		log.Fatalf("Config error: %s", err)
-	}
+const defaultCfgFile = "./config/config.yml"
 
-	// Run
-	app.Run(cfg)
+func main() {
+	v := flag.Bool("v", false, "print version")
+	h := flag.Bool("h", false, "print help")
+	cfgFile := flag.String("c", defaultCfgFile, "config file")
+	flag.Parse()
+	if *v {
+		fmt.Println(version.GetVersion().String())
+		os.Exit(0)
+	}
+	if *h {
+		fmt.Printf("Usage: %s [-v] [-h] [-c config file]\n", os.Args[0])
+		os.Exit(0)
+	}
+	app.Run(*cfgFile)
 }

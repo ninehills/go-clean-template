@@ -21,11 +21,11 @@ compose-down: ### Down docker-compose
 	docker-compose down --remove-orphans
 .PHONY: compose-down
 
-swag-v1: ### swag init
-	swag init -g internal/controller/http/v1/router.go
-.PHONY: swag-v1
+swag: ### swag init
+	swag init -g internal/controller/http/router.go
+.PHONY: swag
 
-run: swag-v1 ### swag run
+run: swag ### swag run
 	go mod tidy && go mod download && \
 	DISABLE_SWAGGER_HTTP_HANDLER='' GIN_MODE=debug CGO_ENABLED=0 go run -tags migrate ./cmd/app
 .PHONY: run
@@ -65,3 +65,8 @@ migrate-create:  ### create new migration
 migrate-up: ### migration up
 	migrate -path migrations -database '$(PG_URL)?sslmode=disable' up
 .PHONY: migrate-up
+
+sqlc: ### Run sqlc generate
+	sqlc generate
+	python3 ./sql/custom_interface.py
+.PHONY: sqlc

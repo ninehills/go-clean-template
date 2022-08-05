@@ -1,0 +1,11 @@
+version: 1
+packages:
+  - path: "internal/dao"
+    name: "dao"
+    engine: "mysql"
+    schema: "sql/schema/"
+    queries: "sql/query/"
+    # If true, slices returned by :many queries will be empty instead of nil.. Defaults to false.
+    emit_empty_slices: true
+    # If true, output a Querier interface in the generated package. Defaults to false.
+    emit_interface: true

@@ -8,8 +8,6 @@ import (
 	"time"
 
 	. "github.com/Eun/go-hit"
-
-	"github.com/evrone/go-clean-template/pkg/rabbitmq/rmq_rpc/client"
 )
 
 const (
@@ -87,53 +85,4 @@ func TestHTTPDoTranslate(t *testing.T) {
 		Expect().Status().Equal(http.StatusBadRequest),
 		Expect().Body().JSON().JQ(".error").Equal("invalid request body"),
 	)
-}
-
-// HTTP GET: /translation/history.
-func TestHTTPHistory(t *testing.T) {
-	Test(t,
-		Description("History Success"),
-		Get(basePath+"/translation/history"),
-		Expect().Status().Equal(http.StatusOK),
-		Expect().Body().String().Contains(`{"history":[{`),
-	)
-}
-
-// RabbitMQ RPC Client: getHistory.
-func TestRMQClientRPC(t *testing.T) {
-	rmqClient, err := client.New(rmqURL, rpcServerExchange, rpcClientExchange)
-	if err != nil {
-		t.Fatal("RabbitMQ RPC Client - init error - client.New")
-	}
-
-	defer func() {
-		err = rmqClient.Shutdown()
-		if err != nil {
-			t.Fatal("RabbitMQ RPC Client - shutdown error - rmqClient.RemoteCall", err)
-		}
-	}()
-
-	type Translation struct {
-		Source      string `json:"source"`
-		Destination string `json:"destination"`
-		Original    string `json:"original"`
-		Translation string `json:"translation"`
-	}
-
-	type historyResponse struct {
-		History []Translation `json:"history"`
-	}
-
-	for i := 0; i < requests; i++ {
-		var history historyResponse
-
-		err = rmqClient.RemoteCall("getHistory", nil, &history)
-		if err != nil {
-			t.Fatal("RabbitMQ RPC Client - remote call error - rmqClient.RemoteCall", err)
-		}
-
-		if history.History[0].Original != "текст для перевода" {
-			t.Fatal("Original != текст для перевода")
-		}
-	}
 }

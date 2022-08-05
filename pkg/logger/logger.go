@@ -1,102 +1,110 @@
 package logger
 
 import (
+	"context"
 	"fmt"
+	"io"
 	"os"
-	"strings"
+	"strconv"
+	"time"
 
+	"github.com/gin-contrib/requestid"
+	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
 )
 
-// Interface -.
-type Interface interface {
-	Debug(message interface{}, args ...interface{})
-	Info(message string, args ...interface{})
-	Warn(message string, args ...interface{})
-	Error(message interface{}, args ...interface{})
-	Fatal(message interface{}, args ...interface{})
-}
-
-// Logger -.
+// 自定义的 Logger，封装了zerolog Logger
 type Logger struct {
 	logger *zerolog.Logger
 }
 
-var _ Interface = (*Logger)(nil)
-
-// New -.
-func New(level string) *Logger {
-	var l zerolog.Level
-
-	switch strings.ToLower(level) {
-	case "error":
-		l = zerolog.ErrorLevel
-	case "warn":
-		l = zerolog.WarnLevel
-	case "info":
-		l = zerolog.InfoLevel
-	case "debug":
-		l = zerolog.DebugLevel
-	default:
-		l = zerolog.InfoLevel
-	}
-
-	zerolog.SetGlobalLevel(l)
-
-	skipFrameCount := 3
-	logger := zerolog.New(os.Stdout).With().Timestamp().CallerWithSkipFrameCount(zerolog.CallerSkipFrameCount + skipFrameCount).Logger()
-
-	return &Logger{
-		logger: &logger,
-	}
-}
-
-// Debug -.
-func (l *Logger) Debug(message interface{}, args ...interface{}) {
-	l.msg("debug", message, args...)
-}
-
-// Info -.
-func (l *Logger) Info(message string, args ...interface{}) {
-	l.log(message, args...)
-}
-
-// Warn -.
-func (l *Logger) Warn(message string, args ...interface{}) {
-	l.log(message, args...)
-}
-
-// Error -.
-func (l *Logger) Error(message interface{}, args ...interface{}) {
-	if l.logger.GetLevel() == zerolog.DebugLevel {
-		l.Debug(message, args...)
-	}
-
-	l.msg("error", message, args...)
-}
-
-// Fatal -.
-func (l *Logger) Fatal(message interface{}, args ...interface{}) {
-	l.msg("fatal", message, args...)
-
-	os.Exit(1)
-}
-
-func (l *Logger) log(message string, args ...interface{}) {
-	if len(args) == 0 {
-		l.logger.Info().Msg(message)
+// 注入 request id
+func (l *Logger) WithContext(c context.Context) *Logger {
+	// 尝试从context中获取 *gin.Context
+	value := c.Value(gin.ContextKey)
+	if value == nil {
+		// 如果并不包含 gin.Context，那么就不做任何处理
+		return l
 	} else {
-		l.logger.Info().Msgf(message, args...)
+		d := value.(*gin.Context)
+		r := l.logger.With().Str("request_id", requestid.Get(d)).Logger()
+		return &Logger{logger: &r}
 	}
 }
 
-func (l *Logger) msg(level string, message interface{}, args ...interface{}) {
-	switch msg := message.(type) {
-	case error:
-		l.log(msg.Error(), args...)
-	case string:
-		l.log(msg, args...)
-	default:
-		l.log(fmt.Sprintf("%s message %v has unknown type %v", level, message, msg), args...)
+func (l *Logger) Log() *zerolog.Logger {
+	return l.logger
+}
+
+// 如下方法是为了保持使用的简单
+func (l *Logger) Debug() *zerolog.Event {
+	return l.logger.Debug()
+}
+
+func (l *Logger) Info() *zerolog.Event {
+	return l.logger.Info()
+}
+
+func (l *Logger) Warn() *zerolog.Event {
+	return l.logger.Warn()
+}
+
+func (l *Logger) Error() *zerolog.Event {
+	return l.logger.Error()
+}
+
+func (l *Logger) Fatal() *zerolog.Event {
+	return l.logger.Fatal()
+}
+
+func (l *Logger) WithLevel(level zerolog.Level) *zerolog.Event {
+	return l.logger.WithLevel(level)
+}
+
+func New(level string, format string) (*Logger, error) {
+	var out io.Writer
+	if format == "text" {
+		// 文本格式输出，参考 https://github.com/rs/zerolog#pretty-logging
+		out = zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.RFC3339}
+	} else {
+		// JSON 格式输出
+		out = os.Stderr
 	}
+
+	// 设置日志级别
+	logLevel, err := zerolog.ParseLevel(level)
+	if err != nil {
+		return &Logger{}, fmt.Errorf("invalid log level: %s", level)
+	}
+	zerolog.SetGlobalLevel(logLevel)
+
+	// 注册主机名
+	hostname, err := os.Hostname()
+	if err != nil {
+		panic(fmt.Sprintf("Can't get hostname: %s", err))
+	}
+
+	// 使用短文件路径
+	zerolog.CallerMarshalFunc = func(file string, line int) string {
+		short := file
+		for i := len(file) - 1; i > 0; i-- {
+			if file[i] == '/' {
+				short = file[i+1:]
+				break
+			}
+		}
+		file = short
+		return file + ":" + strconv.Itoa(line)
+	}
+
+	// 初始化 Logger
+	logger := zerolog.
+		New(out).
+		With().
+		Caller().
+		Timestamp().
+		// 节点主机名，用于区分不同实例的日志
+		Str("hostname", hostname).
+		Logger()
+	return &Logger{logger: &logger}, nil
 }

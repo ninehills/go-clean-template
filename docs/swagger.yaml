@@ -1,105 +1,237 @@
-basePath: /v1
+basePath: /
 definitions:
-  entity.Translation:
+  entity.User:
     properties:
-      destination:
-        example: en
+      created_at:
+        description: 创建时间
+        example: "2020-01-01T00:00:00Z"
         type: string
-      original:
-        example: текст для перевода
+      description:
+        description: 备注
+        example: twfbmbsr
         type: string
-      source:
-        example: auto
+      email:
+        description: 邮箱
+        example: xxx@example.com
         type: string
-      translation:
-        example: text for translation
+      status:
+        description: 用户状态，1代表启用，2代表禁用
+        example: 1
+        type: integer
+      updated_at:
+        description: 更新时间
+        example: "2020-01-01T00:00:00Z"
+        type: string
+      username:
+        description: 用户的名称
+        example: twfbmbsr
         type: string
     type: object
-  v1.doTranslateRequest:
+  exception.Response:
     properties:
-      destination:
-        example: en
+      code:
+        example: Conflict
         type: string
-      original:
-        example: текст для перевода
-        type: string
-      source:
-        example: auto
-        type: string
-    required:
-      - destination
-      - original
-      - source
-    type: object
-  v1.historyResponse:
-    properties:
-      history:
-        items:
-          $ref: '#/definitions/entity.Translation'
-        type: array
-    type: object
-  v1.response:
-    properties:
-      error:
+      message:
         example: message
         type: string
+      requestId:
+        example: b5953bf0-9f15-4c42-afb4-1c125b40d7ce
+        type: string
+    type: object
+  http.createUserRequest:
+    properties:
+      confirm_password:
+        type: string
+      description:
+        maxLength: 140
+        minLength: 0
+        type: string
+      email:
+        maxLength: 64
+        minLength: 0
+        type: string
+      password:
+        description: 密码的验证比较复杂，有单独的方法进行验证
+        type: string
+      username:
+        description: username 应该是长度1-64位的字母、数字或"_"
+        maxLength: 64
+        minLength: 1
+        type: string
+    required:
+    - confirm_password
+    - email
+    - password
+    - username
+    type: object
+  http.listUserResponse:
+    properties:
+      pageNo:
+        type: integer
+      pageSize:
+        type: integer
+      result:
+        items:
+          $ref: '#/definitions/entity.User'
+        type: array
+      totalCount:
+        type: integer
     type: object
 host: localhost:8080
 info:
   contact: {}
-  description: Using a translation service as an example
-  title: Go Clean Template API
+  description: GO WEBAPP TEMPLATE API
+  title: GO WEBAPP TEMPLATE API
   version: "1.0"
 paths:
-  /translation/do-translate:
-    post:
-      consumes:
-        - application/json
-      description: Translate a text
-      operationId: do-translate
+  /v1/users:
+    get:
+      description: List user with pages
+      operationId: list-users
       parameters:
-        - description: Set up translation
-          in: body
-          name: request
-          required: true
-          schema:
-            $ref: '#/definitions/v1.doTranslateRequest'
+      - description: Page number
+        in: query
+        name: pageNo
+        required: true
+        type: integer
+      - description: Page size
+        in: query
+        name: pageSize
+        required: true
+        type: integer
+      - description: Order asc/desc
+        in: query
+        name: order
+        required: true
+        type: string
+      - description: Order by create_time
+        in: query
+        name: orderBy
+        required: true
+        type: string
+      - description: Username
+        in: query
+        name: username
+        required: true
+        type: string
+      - description: Status 1/2
+        in: query
+        name: status
+        required: true
+        type: integer
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entity.Translation'
+            $ref: '#/definitions/http.listUserResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/exception.Response'
+      summary: List users
+      tags:
+      - user
+    post:
+      consumes:
+      - application/json
+      description: Create user, user_id is generated random
+      operationId: create-user
+      parameters:
+      - description: Set up user
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/http.createUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/v1.response'
+            $ref: '#/definitions/exception.Response'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/v1.response'
-      summary: Translate
+            $ref: '#/definitions/exception.Response'
+      summary: Create user
       tags:
-        - translation
-  /translation/history:
-    get:
-      consumes:
-        - application/json
-      description: Show all translation history
-      operationId: history
+      - user
+  /v1/users/:username:
+    delete:
+      description: Delete user by username
+      operationId: delete-user
+      parameters:
+      - description: Username
+        in: path
+        name: username
+        required: true
+        type: string
       produces:
-        - application/json
+      - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/v1.historyResponse'
+            $ref: '#/definitions/entity.User'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/v1.response'
-      summary: Show history
+            $ref: '#/definitions/exception.Response'
+      summary: Delete user
       tags:
-        - translation
+      - user
+    get:
+      description: Get user by username
+      operationId: get-user
+      parameters:
+      - description: Username
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/exception.Response'
+      summary: Get user
+      tags:
+      - user
+    put:
+      description: Update user by username
+      operationId: update-user
+      parameters:
+      - description: username
+        in: path
+        name: username
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/exception.Response'
+      summary: Update user
+      tags:
+      - user
 swagger: "2.0"
