@@ -2,8 +2,7 @@
 
 # Go 网站应用模版
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/ninehills/go-webapp-template)](https://goreportcard.com/report/github.com/ninehills/go-webapp-template)
-[![License](https://img.shields.io/github/license/evrone/go-clean-template.svg)](https://github.com/ninehills/go-webapp-template/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/ninehills/go-webapp-template.svg)](https://github.com/ninehills/go-webapp-template/blob/master/LICENSE)
 [![Release](https://img.shields.io/github/v/release/evrone/go-clean-template.svg)](https://github.com/ninehills/go-webapp-template/releases/)
 [![codecov](https://codecov.io/gh/evrone/go-clean-template/branch/master/graph/badge.svg?token=XE3E0X3EVQ)](https://codecov.io/gh/evrone/go-clean-template)
 
@@ -97,14 +96,14 @@ Swagger 文档。由  [swag](https://github.com/swaggo/swag) 库自动生成
 使用了[go-hit](https://github.com/Eun/go-hit) 库。
 
 - `main_test.go` 为测试入口。
-- `workspace_test.go` 等为各个功能的Restful测试用例。
+- `xxxx_test.go` 等为各个功能的Restful测试用例。
 
 启动功能测试命令：`make integration-test` （启动之前请确保服务启动在本地并且相关依赖 Ready）
 
 同时该测试可以测试非本地环境，配置在`main_test.go`中，使用方法为传入环境变量`ENV`，目前有如下环境
 
 ```bash
-# 测试环境：180.76.50.219:8080
+# 远程测试环境
 ENV=testing make integration-test
 
 # 本地环境，不加ENV
@@ -134,8 +133,8 @@ MVC 中的控制层，服务的路由用同样的风格进行编写
 业务逻辑的核心部分，以 Workspace 为例：
 
 - `interfaces.go`: 将所有业务接口放到一起
-- `workspace.go`: 实现的业务逻辑（相当于 Service）
-- `workspace_test.go`: 对应的单元测试
+- `user.go`: 实现的业务逻辑（相当于 Service）
+- `user_test.go`: 对应的单元测试
 
 此处可以自动生成单测所依赖的mock，具体使用方法：
 
