@@ -1,21 +1,6 @@
-# Step 1: Modules caching
-FROM golang:1.17.1-alpine3.14 as modules
-COPY go.mod go.sum /modules/
-WORKDIR /modules
-RUN go mod download
+FROM debian:11
 
-# Step 2: Builder
-FROM golang:1.17.1-alpine3.14 as builder
-COPY --from=modules /go/pkg /go/pkg
-COPY . /app
 WORKDIR /app
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-    go build -tags migrate -o /bin/app ./cmd/app
-
-# Step 3: Final
-FROM scratch
-COPY --from=builder /app/config /config
-COPY --from=builder /app/migrations /migrations
-COPY --from=builder /bin/app /app
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-CMD ["/app"]
+ADD ./output/go-web-template_*_Linux-x86_64.tar.gz /app/
+EXPOSE 8080
+CMD ["/app/go-web-template"]

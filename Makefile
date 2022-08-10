@@ -70,3 +70,11 @@ sqlc: ### Run sqlc generate
 	sqlc generate
 	python3 ./sql/custom_interface.py
 .PHONY: sqlc
+
+build: ### only build
+	goreleaser release --snapshot --rm-dist
+.PHONY: build
+
+release: ## release
+	goreleaser release --rm-dist
+.PHONY: release
