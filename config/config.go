@@ -10,6 +10,7 @@ import (
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
+//nolint:gochecknoglobals
 var (
 	cfg     *Config
 	cfgLock = new(sync.RWMutex)
@@ -95,7 +96,7 @@ func LoadConfig(cfgFile string) (*Config, error) {
 
 // Auto reload config.
 // copy from https://github.com/spf13/viper/blob/v1.12.0/viper.go#L431
-func ConfigWatcher(filename string, handler func(cfg *Config)) {
+func Watcher(filename string, handler func(cfg *Config)) { //nolint: gocognit, cyclop
 	initWG := sync.WaitGroup{}
 	initWG.Add(1)
 	go func() {

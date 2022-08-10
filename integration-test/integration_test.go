@@ -52,6 +52,8 @@ func healthCheck(attempts int) error {
 
 // HTTP POST: /translation/do-translate.
 func TestHTTPDoTranslate(t *testing.T) {
+	t.Parallel()
+
 	body := `{
 		"destination": "en",
 		"original": "текст для перевода",

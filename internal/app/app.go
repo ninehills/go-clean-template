@@ -32,7 +32,7 @@ func Run(cfgFile string) {
 	defer dep.Close()
 
 	// 启动日志动态加载逻辑
-	go config.ConfigWatcher(cfgFile, dep.ReloadLogger)
+	go config.Watcher(cfgFile, dep.ReloadLogger)
 
 	l := dep.Logger
 

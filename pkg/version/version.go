@@ -5,6 +5,7 @@ import (
 	"sync"
 )
 
+//nolint:gochecknoglobals
 var (
 	version = "dev"
 	commit  = "none"
@@ -28,6 +29,7 @@ func (v *Version) String() string {
 	)
 }
 
+//nolint:gochecknoglobals
 var (
 	once sync.Once
 	v    *Version

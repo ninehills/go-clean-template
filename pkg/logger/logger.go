@@ -124,7 +124,11 @@ func (l *logger) Ctx(c context.Context) Logger {
 		return l
 	}
 
-	d := value.(*gin.Context)
+	d, ok := value.(*gin.Context)
+	if !ok {
+		// 如果不是 *gin.Context，那么就不做任何处理
+		return l
+	}
 
 	return l.WithField("request_id", requestid.Get(d))
 }
