@@ -1,21 +1,22 @@
 app:
-  name: 'go-webapp-template'
+  name: "go-webapp-template"
   debug: false
-  super_user: "admin"
-  super_password: "admin!123"
+  superUser: "admin"
+  superPassword: "admin!123"
 
 http:
-  port: '8080'
+  port: "8080"
 
 log:
-  log_level: 'debug'
-  log_format: 'text'
+  level: "debug"
+  format: "text"
+  noColor: false
 
 mysql:
   dsn: "go_webapp:go_webapp@tcp(127.0.0.1:3306)/go_webapp?parseTime=true"
-  conn_max_lifetime: 180
-  max_open_conns: 100
-  max_idle_conns: 100
+  connMaxLifetime: 180
+  maxOpenConns: 100
+  maxIdleConns: 100
 
 redis:
   url: "redis://localhost:6379/1"

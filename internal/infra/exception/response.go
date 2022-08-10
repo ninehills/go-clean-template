@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Error response for http
+// Error response for http.
 type Response struct {
 	Message   string `json:"message" example:"message"`
 	Code      string `json:"code" example:"Conflict"`

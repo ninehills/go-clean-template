@@ -3,6 +3,7 @@ package http
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,7 +11,6 @@ import (
 	"github.com/ninehills/go-webapp-template/internal/infra/dependency"
 	"github.com/ninehills/go-webapp-template/internal/infra/middleware"
 	"github.com/ninehills/go-webapp-template/internal/service"
-	"github.com/ninehills/go-webapp-template/pkg/logger"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -22,7 +22,7 @@ import (
 // @description GO WEBAPP TEMPLATE API
 // @version     1.0
 // @host        localhost:8080
-// @BasePath    /
+// @BasePath    /.
 func NewRouter(handler *gin.Engine, deps *dependency.Dependency) {
 	// Options
 	handler.Use(gin.Logger())
@@ -45,7 +45,7 @@ func NewRouter(handler *gin.Engine, deps *dependency.Dependency) {
 	middlewares := middleware.NewMiddlewares(deps)
 
 	// Init default user
-	InitDefaultUser(deps.Logger, svcs.User, deps.Config.App.SuperUser, deps.Config.App.SuperPassword)
+	InitDefaultUser(svcs.User, deps.Config.App.SuperUser, deps.Config.App.SuperPassword)
 
 	l := deps.Logger
 
@@ -58,10 +58,11 @@ func NewRouter(handler *gin.Engine, deps *dependency.Dependency) {
 	}
 }
 
-func InitDefaultUser(l *logger.Logger, user service.User, username string, password string) {
+func InitDefaultUser(user service.User, username, password string) {
 	_, err := user.Get(context.Background(), username)
 	if err != nil {
-		l.Info().Msgf("Init default user %s", username)
+		log.Printf("Init default user %s", username)
+
 		_, err := user.Create(context.Background(), entity.User{
 			Username:    username,
 			Password:    password,
@@ -70,7 +71,8 @@ func InitDefaultUser(l *logger.Logger, user service.User, username string, passw
 			Description: "Default created super user",
 		})
 		if err != nil {
-			l.Fatal().Err(err).Msg("Init default user failed")
+			log.Printf("Init default user failed: %s", err)
+			panic(err)
 		}
 	}
 }

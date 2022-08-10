@@ -14,16 +14,15 @@ import (
 
 type userRoutes struct {
 	s service.User
-	l *logger.Logger
+	l logger.Logger
 }
 
-func newUserRoutes(handler *gin.RouterGroup, l *logger.Logger, serv *service.Services, midd *middleware.Middlewares) {
+func newUserRoutes(handler *gin.RouterGroup, l logger.Logger, serv *service.Services, midd *middleware.Middlewares) {
 	r := &userRoutes{
 		l: l,
 		s: serv.User,
 	}
 	handler.POST("/users",
-		// TODO: 在审计记录里过滤掉密码
 		midd.Audit.Audit(),
 		r.createUser)
 	handler.GET("/users",
@@ -31,7 +30,6 @@ func newUserRoutes(handler *gin.RouterGroup, l *logger.Logger, serv *service.Ser
 	handler.GET("/users/:username",
 		r.getUser)
 	handler.PUT("/users/:username",
-		// TODO: 在审计记录里过滤掉密码
 		midd.Audit.Audit(),
 		r.updateUser)
 	handler.DELETE("/users/:username",
@@ -47,12 +45,13 @@ func newUserRoutes(handler *gin.RouterGroup, l *logger.Logger, serv *service.Ser
 // @Produce     json
 // @Success     200 {object} entity.User
 // @Failure     500 {object} exception.Response
-// @Router      /v1/users/:username [get]
+// @Router      /v1/users/:username [get].
 func (r *userRoutes) getUser(c *gin.Context) {
 	user, err := r.s.Get(c, c.Param("username"))
 	if err != nil {
-		r.l.WithContext(c).Error().Err(err).Msg("http - v1 - getUser failed")
+		r.l.Ctx(c).Err(err).Error("http - v1 - getUser failed")
 		exception.ErrorResponse(c, err)
+
 		return
 	}
 
@@ -64,7 +63,7 @@ type updateUserRequest struct {
 	Email           string `json:"email" binding:"omitempty,min=1,max=64,email"`
 	Description     string `json:"description" binding:"omitempty,min=0,max=140"`
 	Password        string `json:"password" binding:"omitempty"` // 密码有单独的方法进行校验
-	ConfirmPassword string `json:"confirm_password" binding:"omitempty"`
+	ConfirmPassword string `json:"confirmPassword" binding:"omitempty"`
 }
 
 // @Summary     Update user
@@ -75,13 +74,16 @@ type updateUserRequest struct {
 // @Produce     json
 // @Success     200 {object} entity.User
 // @Failure     500 {object} exception.Response
-// @Router      /v1/users/:username [PUT]
+// @Router      /v1/users/:username [PUT].
 func (r *userRoutes) updateUser(c *gin.Context) {
-	var username = c.Param("username")
+	username := c.Param("username")
+
 	var request updateUserRequest
+
 	if err := c.ShouldBindJSON(&request); err != nil {
-		r.l.WithContext(c).Warn().Err(err).Msg("http - v1 - updateUser invalid request body")
+		r.l.Ctx(c).Err(err).Warn("http - v1 - updateUser invalid request body")
 		exception.CodeResponse(c, http.StatusBadRequest, "invalid request body")
+
 		return
 	}
 
@@ -89,8 +91,9 @@ func (r *userRoutes) updateUser(c *gin.Context) {
 	if request.Password != "" || request.ConfirmPassword != "" {
 		err := password.ValidatePassword(request.Password, request.ConfirmPassword)
 		if err != nil {
-			r.l.WithContext(c).Warn().Err(err).Msg("http - v1 - updateUser password is invalid")
+			r.l.Ctx(c).Err(err).Warn("http - v1 - updateUser password is invalid")
 			exception.CodeResponse(c, http.StatusBadRequest, err.Error())
+
 			return
 		}
 	}
@@ -105,8 +108,9 @@ func (r *userRoutes) updateUser(c *gin.Context) {
 		},
 	)
 	if err != nil {
-		r.l.WithContext(c).Error().Err(err).Msg("http - v1 - updateUser failed")
+		r.l.Ctx(c).Err(err).Error("http - v1 - updateUser failed")
 		exception.ErrorResponse(c, err)
+
 		return
 	}
 
@@ -117,7 +121,7 @@ type listUserRequest struct {
 	PageNo   int64  `form:"pageNo,default=1" binding:"gte=1"`
 	PageSize int64  `form:"pageSize,default=100" binding:"gte=1"`
 	Order    string `form:"order,default=" binding:"omitempty,oneof='asc' 'desc'"`
-	OrderBy  string `form:"orderBy,default=" binding:"omitempty,oneof='id' 'created_at' 'updated_at' 'username' 'email' 'status'"`
+	OrderBy  string `form:"orderBy,default=" binding:"omitempty,oneof='created_at' 'updated_at' 'username'"`
 	Username string `form:"username,default=" binding:"omitempty,min=1,max=64,username"`
 	Status   int32  `form:"status,default=0" binding:"omitempty,oneof=1 2"`
 	Email    string `form:"email,default=" binding:"omitempty,min=1,max=64,email"`
@@ -143,15 +147,18 @@ type listUserResponse struct {
 // @Produce     json
 // @Success     200 {object} listUserResponse
 // @Failure     500 {object} exception.Response
-// @Router      /v1/users [get]
+// @Router      /v1/users [get].
 func (r *userRoutes) ListUsers(c *gin.Context) {
 	var request listUserRequest
+
 	err := c.ShouldBindQuery(&request)
 	if err != nil {
-		r.l.WithContext(c).Warn().Err(err).Msg("http - v1 - ListUsers invalid request body")
+		r.l.Ctx(c).Err(err).Warn("http - v1 - ListUsers invalid request body")
 		exception.CodeResponse(c, http.StatusBadRequest, err.Error())
+
 		return
 	}
+
 	pageresult, users, sErr := r.s.Query(
 		c, entity.PageQuery{
 			PageNo:   request.PageNo,
@@ -163,10 +170,12 @@ func (r *userRoutes) ListUsers(c *gin.Context) {
 			Username: request.Username,
 			Status:   request.Status,
 			Email:    request.Email,
-		})
+		},
+	)
 	if sErr != nil {
-		r.l.WithContext(c).Error().Err(err).Msg("http - v1 - ListUsers failed")
+		r.l.Ctx(c).Err(err).Error("http - v1 - ListUsers failed")
 		exception.ErrorResponse(c, sErr)
+
 		return
 	}
 
@@ -185,7 +194,7 @@ type createUserRequest struct {
 	Description string `json:"description" binding:"min=0,max=140"`
 	// 密码的验证比较复杂，有单独的方法进行验证
 	Password        string `json:"password" binding:"required"`
-	ConfirmPassword string `json:"confirm_password" binding:"required"`
+	ConfirmPassword string `json:"confirmPassword" binding:"required"`
 }
 
 // @Summary     Create user
@@ -198,19 +207,21 @@ type createUserRequest struct {
 // @Success     200 {object} entity.User
 // @Failure     400 {object} exception.Response
 // @Failure     500 {object} exception.Response
-// @Router      /v1/users [post]
+// @Router      /v1/users [post].
 func (r *userRoutes) createUser(c *gin.Context) {
 	var request createUserRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
-		r.l.WithContext(c).Warn().Err(err).Msg("http - v1 - createUser invalid request body")
+		r.l.Ctx(c).Err(err).Warn("http - v1 - createUser invalid request body")
 		exception.CodeResponse(c, http.StatusBadRequest, "invalid request body")
+
 		return
 	}
 
 	err := password.ValidatePassword(request.Password, request.ConfirmPassword)
 	if err != nil {
-		r.l.WithContext(c).Warn().Err(err).Msg("http - v1 - createUser password is invalid")
+		r.l.Ctx(c).Err(err).Warn("http - v1 - createUser password is invalid")
 		exception.CodeResponse(c, http.StatusBadRequest, err.Error())
+
 		return
 	}
 
@@ -224,8 +235,9 @@ func (r *userRoutes) createUser(c *gin.Context) {
 
 	ret, err := r.s.Create(c, user)
 	if err != nil {
-		r.l.WithContext(c).Error().Err(err).Msg("http - v1 - createUser user failed")
+		r.l.Ctx(c).Err(err).Error("http - v1 - createUser user failed")
 		exception.ErrorResponse(c, err)
+
 		return
 	}
 
@@ -240,14 +252,14 @@ func (r *userRoutes) createUser(c *gin.Context) {
 // @Produce     json
 // @Success     200 {object} entity.User
 // @Failure     500 {object} exception.Response
-// @Router      /v1/users/:username [DELETE]
+// @Router      /v1/users/:username [DELETE].
 func (r *userRoutes) deleteUser(c *gin.Context) {
-	var username = c.Param("username")
+	username := c.Param("username")
 
-	err := r.s.Delete(c, username)
-	if err != nil {
-		r.l.WithContext(c).Error().Err(err).Msg("http - v1 - deleteUser failed")
+	if err := r.s.Delete(c, username); err != nil {
+		r.l.Ctx(c).Err(err).Error("http - v1 - deleteUser failed")
 		exception.ErrorResponse(c, err)
+
 		return
 	}
 

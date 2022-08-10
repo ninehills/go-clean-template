@@ -1,5 +1,3 @@
-![Go Web App Template](docs/img/logo.svg)
-
 # Go 网站应用模版
 
 [![License](https://img.shields.io/github/license/ninehills/go-webapp-template.svg)](https://github.com/ninehills/go-webapp-template/blob/master/LICENSE)
@@ -26,17 +24,19 @@
 # swagger 命令行工具：
 go install github.com/swaggo/swag/cmd/swag@latest
 # sqlc 工具
-go install github.com/kyleconroy/sqlc/cmd/sqlc@latest
+brew install sqlc
 # mockery 工具
-go install github.com/vektra/mockery/v2@latest
+brew install mockery
 # goreleaser 工具
-go install github.com/goreleaser/goreleaser@latest
+brew install goreleaser
+# golangci-lint
+brew install golangci-lint
 ```
 
 ## 快速开始
 
-
 本地开发
+
 ```sh
 # Postgres, RabbitMQ
 $ make compose-up
@@ -44,13 +44,12 @@ $ make compose-up
 $ make run
 ```
 
-集成测试（可以在CI中运行）
+集成测试（可以在 CI 中运行）
+
 ```sh
 # DB, app + migrations, integration tests
 $ make compose-up-integration-test
 ```
-
-
 
 ## 代码结构
 
@@ -62,9 +61,9 @@ $ make compose-up-integration-test
 
 ### `sql`、`internal/dao`、`sqlc.yaml`
 
-- `sql` 是 sqlc 依赖的原始 SQL语句。
-    - `schema`： 存放所有的建表语句
-    - `query`: 存放所有的查询语句，最好和schema相对应
+- `sql` 是 sqlc 依赖的原始 SQL 语句。
+  - `schema`： 存放所有的建表语句
+  - `query`: 存放所有的查询语句，最好和 schema 相对应
 - `sqlc.yaml` 是 sqlc 的配置文件。
 - `internal/dao` 是 sqlc 生成的代码，请不要修改。
 
@@ -72,10 +71,10 @@ $ make compose-up-integration-test
 
 ### `config`
 
-配置，首先读取 `config/config.yml`中的默认内容，然后读取环境变量里面有符合的变量，将其覆盖yml中的配置
+配置，首先读取 `config/config.yml`中的默认内容，然后读取环境变量里面有符合的变量，将其覆盖 yml 中的配置
 
 配置的结构在 `config.go`中
-`env-required:true` 标签强制你指定值（在yml文件或者环境变量中）
+`env-required:true` 标签强制你指定值（在 yml 文件或者环境变量中）
 
 配置使用的[cleanenv](https://github.com/ilyakaznacheev/cleanenv) 库
 
@@ -83,7 +82,7 @@ $ make compose-up-integration-test
 
 ### `docs`
 
-Swagger 文档。由  [swag](https://github.com/swaggo/swag) 库自动生成
+Swagger 文档。由 [swag](https://github.com/swaggo/swag) 库自动生成
 你不需要自己修改任何内容。
 
 生成命令：`make swag`
@@ -91,12 +90,12 @@ Swagger 文档。由  [swag](https://github.com/swaggo/swag) 库自动生成
 
 ### `integration-test`
 
-功能测试目录，它会在应用容器旁启动独立的容器。具体的测试逻辑在 integration_test.go 文件中，主要对Restful接口进行测试。
+功能测试目录，它会在应用容器旁启动独立的容器。具体的测试逻辑在 integration_test.go 文件中，主要对 Restful 接口进行测试。
 
 使用了[go-hit](https://github.com/Eun/go-hit) 库。
 
 - `main_test.go` 为测试入口。
-- `xxxx_test.go` 等为各个功能的Restful测试用例。
+- `xxxx_test.go` 等为各个功能的 Restful 测试用例。
 
 启动功能测试命令：`make integration-test` （启动之前请确保服务启动在本地并且相关依赖 Ready）
 
@@ -119,14 +118,14 @@ APP 主逻辑入口，其通过依赖注入的方式生成主要的业务逻辑�
 MVC 中的控制层，服务的路由用同样的风格进行编写
 
 - handler 按照应用领域进行分组（有共同的基础）
-- 对于每一个分组，创建自己的路由结构体和请求path路径
+- 对于每一个分组，创建自己的路由结构体和请求 path 路径
 - 业务逻辑的结构被注入到路由器结构中，它将被处理程序调用
 
 ### `internal/entity`
 
 业务逻辑实体（模型），将所有实体统一定义在此处。注意实体的定义和`internal/dao`中的定义是不同的，前者更多使用在接口中，后者是数据库的原始结构。
 
-所以此处增加转换逻辑（其实可以给sqlc配置生成的model带json tags，但是为了隔离两层，所以宁愿人工转换）
+所以此处增加转换逻辑（其实可以给 sqlc 配置生成的 model 带 json tags，但是为了隔离两层，所以宁愿人工转换）
 
 ### `internal/service`
 
@@ -136,9 +135,9 @@ MVC 中的控制层，服务的路由用同样的风格进行编写
 - `user.go`: 实现的业务逻辑（相当于 Service）
 - `user_test.go`: 对应的单元测试
 
-此处可以自动生成单测所依赖的mock，具体使用方法：
+此处可以自动生成单测所依赖的 mock，具体使用方法：
 
-- 生成 mock代码： `make mock`
+- 生成 mock 代码： `make mock`
 - 进行单元测试： `make test`
 
 ### `pkg`

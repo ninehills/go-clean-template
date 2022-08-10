@@ -1,0 +1,41 @@
+run:
+    skip-dirs:
+        - .gen
+        - internal/dao
+
+    skip-files:
+        - ".*_gen\\.go$"
+
+linters-settings:
+    golint:
+        min-confidence: 0.1
+    goimports:
+        local-prefixes: github.com/sagikazarmark/modern-go-application
+    tagliatelle:
+      # Check the struck tag name case.
+      case:
+        # Use the struct field name to check the name of the struct tag.
+        # Default: false
+        use-field-name: true
+        rules:
+          # Any struct tag type can be used.
+          # Support string case: `camel`, `pascal`, `kebab`, `snake`, `goCamel`, `goPascal`, `goKebab`, `goSnake`, `upper`, `lower`
+          json: camel
+          yaml: camel
+          xml: camel
+
+linters:
+    enable-all: true
+    disable:
+        - funlen
+        - maligned
+        - wsl
+        - gomnd
+        - testpackage
+        - goerr113
+        - varnamelen
+        - exhaustivestruct
+        - exhaustruct
+        - gochecknoglobals
+        # Drives todos nuts
+        - godox

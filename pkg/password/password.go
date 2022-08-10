@@ -7,28 +7,32 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Bcrypt cost，使用默认值 = 10
+// Bcrypt cost，使用默认值 = 10.
 const passwordCost = bcrypt.DefaultCost
 
-// 使用bcrypt加密用户密码
+// 使用bcrypt加密用户密码.
 func EncryptPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), passwordCost)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("bcrypt.GenerateFromPassword failed: %w", err)
 	}
+
 	return string(bytes), nil
 }
 
-// 检查密码的Hash和密码是否匹配
+// 检查密码的Hash和密码是否匹配.
 func CompareHashAndPassword(hash, password string) error {
-	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+
+	return fmt.Errorf("bcrypt.CompareHashAndPassword failed: %w", err)
 }
 
-// 检查密码是否符合格式要求
+// 检查密码是否符合格式要求.
 func ValidatePassword(password, confirmPassword string) error {
 	if password != confirmPassword {
 		return fmt.Errorf("password and confirm password do not match")
 	}
+
 	if !(len(password) >= 8 && len(password) <= 32) {
 		return fmt.Errorf("password must be between 8 and 32 characters")
 	}
@@ -44,5 +48,6 @@ func ValidatePassword(password, confirmPassword string) error {
 		regexp.MustCompile(symbolExp).MatchString(password)) {
 		return fmt.Errorf("password must contain at least one number, one letter, and one special character")
 	}
+
 	return nil
 }

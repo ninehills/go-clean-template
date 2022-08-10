@@ -7,13 +7,13 @@ import (
 )
 
 const (
-	// UserStatusActive 正常
+	// UserStatusActive 正常.
 	UserStatusActive = 1
-	// UserStatusInactive 禁用
+	// UserStatusInactive 禁用.
 	UserStatusInactive = 2
 )
 
-// User Entity
+// User Entity.
 type User struct {
 	// DB id.
 	ID int64 `json:"-" example:"1"`
@@ -28,16 +28,16 @@ type User struct {
 	// 备注
 	Description string `json:"description" example:"twfbmbsr"`
 	// 创建时间
-	CreatedAt time.Time `json:"created_at" example:"2020-01-01T00:00:00Z"`
+	CreatedAt time.Time `json:"createdAt" example:"2020-01-01T00:00:00Z"`
 	// 更新时间
-	UpdatedAt time.Time `json:"updated_at" example:"2020-01-01T00:00:00Z"`
+	UpdatedAt time.Time `json:"updatedAt" example:"2020-01-01T00:00:00Z"`
 }
 
 func (u *User) IsActive() bool {
 	return u.Status == UserStatusActive
 }
 
-// 将 dao.models.User 转为 entity.User, 忽略Password 字段
+// 将 dao.models.User 转为 entity.User, 忽略Password 字段.
 func ToUser(user dao.User) User {
 	return User{
 		ID:          user.ID,
@@ -50,7 +50,7 @@ func ToUser(user dao.User) User {
 	}
 }
 
-// 用户查询条件
+// 用户查询条件.
 type UserQuery struct {
 	Username string `json:"username"`
 	Status   int32  `json:"status"`

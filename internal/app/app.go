@@ -2,21 +2,18 @@
 package app
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/gin-gonic/gin"
-
 	"github.com/ninehills/go-webapp-template/config"
+	"github.com/ninehills/go-webapp-template/internal/controller/http"
 	"github.com/ninehills/go-webapp-template/internal/entity/validation"
 	"github.com/ninehills/go-webapp-template/internal/infra/dependency"
 	"github.com/ninehills/go-webapp-template/internal/infra/middleware"
 	"github.com/ninehills/go-webapp-template/pkg/httpserver"
-
-	http "github.com/ninehills/go-webapp-template/internal/controller/http"
 )
 
 // Run creates objects via constructors.
@@ -27,6 +24,7 @@ func Run(cfgFile string) {
 	if err != nil {
 		log.Fatalf("Config error: %s", err)
 	}
+
 	log.Printf("Config: %+v", cfg)
 
 	// 初始化全部依赖
@@ -42,18 +40,19 @@ func Run(cfgFile string) {
 	if !cfg.App.Debug {
 		gin.SetMode(gin.ReleaseMode)
 	}
+
 	handler := gin.New()
 
 	// 绑定自定义的 Validator 参数校验器
 	validation.BindValidator()
 
 	// 初始化中间件
-	middleware.RegisterGlobalMiddleware(handler, dep.Logger)
+	middleware.RegisterGlobalMiddleware(handler)
 
 	// 初始化 router
-	l.Info().Msg("Controller router init...")
+	l.Info("Controller router init...")
 	http.NewRouter(handler, dep)
-	l.Info().Msgf("Start http server at %s", cfg.HTTP.Port)
+	l.Infof("Start http server at %s", cfg.HTTP.Port)
 	httpServer := httpserver.New(handler, httpserver.Port(cfg.HTTP.Port))
 
 	// Waiting signal
@@ -62,13 +61,13 @@ func Run(cfgFile string) {
 
 	select {
 	case s := <-interrupt:
-		l.Info().Msg("app - Run - signal: " + s.String())
+		l.Info("app - Run - signal: " + s.String())
 	case err = <-httpServer.Notify():
-		l.Error().Err(fmt.Errorf("app - Run - httpServer.Notify: %w", err))
+		l.Errorf("app - Run - httpServer.Notify: %w", err)
 	}
 	// Shutdown
 	err = httpServer.Shutdown()
 	if err != nil {
-		l.Error().Err(fmt.Errorf("app - Run - httpServer.Shutdown: %w", err))
+		l.Errorf("app - Run - httpServer.Shutdown: %w", err)
 	}
 }

@@ -11,24 +11,17 @@ import (
 )
 
 const (
-	// Attempts connection
+	// Attempts connection.
 	host       = "app:8080"
 	healthPath = "http://" + host + "/healthz"
 	attempts   = 20
 
-	// HTTP REST
+	// HTTP REST.
 	basePath = "http://" + host + "/v1"
-
-	// RabbitMQ RPC
-	rmqURL            = "amqp://guest:guest@rabbitmq:5672/"
-	rpcServerExchange = "rpc_server"
-	rpcClientExchange = "rpc_client"
-	requests          = 10
 )
 
 func TestMain(m *testing.M) {
-	err := healthCheck(attempts)
-	if err != nil {
+	if err := healthCheck(attempts); err != nil {
 		log.Fatalf("Integration tests: host %s is not available: %s", host, err)
 	}
 

@@ -1,11 +1,10 @@
 module github.com/ninehills/go-webapp-template
 
-go 1.18
+go 1.17
 
 require (
 	github.com/Eun/go-hit v0.5.23
 	github.com/fsnotify/fsnotify v1.5.4
-	github.com/gin-contrib/logger v0.2.2
 	github.com/gin-contrib/requestid v0.0.5
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-playground/validator/v10 v10.10.0
@@ -14,11 +13,13 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/ilyakaznacheev/cleanenv v1.3.0
 	github.com/prometheus/client_golang v1.12.2
-	github.com/rs/zerolog v1.27.0
+	github.com/sirupsen/logrus v1.6.0
 	github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe
 	github.com/swaggo/gin-swagger v1.5.1
 	github.com/swaggo/swag v1.8.4
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
+	logur.dev/adapter/logrus v0.5.0
+	logur.dev/logur v0.17.0
 )
 
 require (
@@ -49,6 +50,7 @@ require (
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/k0kubun/pp v3.0.1+incompatible // indirect
+	github.com/konsorten/go-windows-terminal-sequences v1.0.3 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/lunixbochs/vtclean v1.0.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect

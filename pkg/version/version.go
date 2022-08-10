@@ -22,7 +22,10 @@ type Version struct {
 }
 
 func (v *Version) String() string {
-	return fmt.Sprintf("version: %s, commit: %s, date: %s, branch: %s, buildBy: %s", v.Version, v.Commit, v.Date, v.Branch, v.BuildBy)
+	return fmt.Sprintf(
+		"version: %s, commit: %s, date: %s, branch: %s, buildBy: %s",
+		v.Version, v.Commit, v.Date, v.Branch, v.BuildBy,
+	)
 }
 
 var (
@@ -40,5 +43,6 @@ func GetVersion() *Version {
 			BuildBy: buildBy,
 		}
 	})
+
 	return v
 }

@@ -6,15 +6,16 @@ import (
 	"log"
 	"time"
 
+	// MySQL driver.
 	_ "github.com/go-sql-driver/mysql"
 )
 
 const (
-	_defaultMaxOpenConns    = 10
-	_defaultMaxIdleConns    = 10
-	_defaultConnMaxLifetime = time.Second * 120
-	connAttempts            = 3
-	connAttemptPeriod       = time.Second * 5
+	defaultMaxOpenConns    = 10
+	defaultMaxIdleConns    = 10
+	defaultConnMaxLifetime = time.Second * 120
+	connAttempts           = 3
+	connAttemptPeriod      = time.Second * 5
 )
 
 // MySQL -.
@@ -29,9 +30,9 @@ type MySQL struct {
 // New -.
 func New(dsn string, opts ...Option) (*MySQL, error) {
 	ms := &MySQL{
-		maxOpenConns:    _defaultMaxOpenConns,
-		maxIdleConns:    _defaultMaxIdleConns,
-		connMaxLifetime: _defaultConnMaxLifetime,
+		maxOpenConns:    defaultMaxOpenConns,
+		maxIdleConns:    defaultMaxIdleConns,
+		connMaxLifetime: defaultConnMaxLifetime,
 	}
 
 	// Custom options
@@ -41,10 +42,12 @@ func New(dsn string, opts ...Option) (*MySQL, error) {
 
 	// Open database
 	var err error
+
 	ms.DB, err = sql.Open("mysql", dsn)
 	if err != nil {
 		return nil, fmt.Errorf("mysql - NewMySQL - Open mysql database failed: %w", err)
 	}
+
 	ms.DB.SetConnMaxLifetime(ms.connMaxLifetime)
 	ms.DB.SetMaxOpenConns(ms.maxOpenConns)
 	ms.DB.SetMaxIdleConns(ms.maxIdleConns)

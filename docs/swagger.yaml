@@ -1,4 +1,4 @@
-basePath: /
+basePath: /.
 definitions:
   entity.User:
     properties:

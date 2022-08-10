@@ -6,8 +6,13 @@ import (
 )
 
 func BindValidator() {
+	var err error
+
 	// Register binding
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
-		v.RegisterValidation("username", usernameValidator)
+		err = v.RegisterValidation("username", UsernameValidator())
+		if err != nil {
+			panic(err)
+		}
 	}
 }
