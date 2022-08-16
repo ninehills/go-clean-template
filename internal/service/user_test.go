@@ -9,7 +9,6 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/google/uuid"
-
 	"github.com/stretchr/testify/require"
 
 	"github.com/ninehills/go-webapp-template/internal/dao"
@@ -54,7 +53,7 @@ func bootstrap(t *testing.T) (*service.UserService, *mocks.MockQuerier, *mocks.M
 	return userService, querier, cacher
 }
 
-// 自定义 UserMatcher，只比较 Username
+// 自定义 UserMatcher，只比较 Username.
 type userMatcher struct {
 	Username string
 }

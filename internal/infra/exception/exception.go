@@ -63,7 +63,7 @@ func Is(err error, target error) bool {
 	var e1, e2 *Error
 	if errors.As(err, &e1) && errors.As(target, &e2) {
 		return e1.Code() == e2.Code()
-	} else {
-		return errors.Is(err, target)
 	}
+
+	return errors.Is(err, target)
 }

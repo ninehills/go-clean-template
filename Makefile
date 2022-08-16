@@ -35,7 +35,7 @@ linter-golangci: ### check by golangci linter
 .PHONY: linter-golangci
 
 test: ### run test
-	go test -v -cover -race ./internal/...
+	go test -v -cover -race -covermode atomic -coverprofile=coverage.txt ./internal/...
 .PHONY: test
 
 integration-test: ### run integration-test

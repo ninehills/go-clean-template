@@ -24,7 +24,7 @@ jobs:
         continue-on-error: true
 
   tests:
-    name: runner / tests
+    name: runner / unit-tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -33,46 +33,22 @@ jobs:
           go-version: 1.19
 
       - name: Unit Tests
-        run: "go test \
-          -v \
-          -race \
-          -covermode atomic \
-          -coverprofile=coverage.txt \
-          ./internal/..."
+        run: "make test"
 
       - name: Upload coverage report
         run: bash <(curl -s https://codecov.io/bash)
+
+  integration_tests:
+    name: runner / integration tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v2
+        with:
+          go-version: 1.19
 
       - name: Install goreleaser
         run: "go install github.com/goreleaser/goreleaser@latest"
 
       - name: Integration tests
-        run: "docker-compose up \
-          --build \
-          --abort-on-container-exit \
-          --exit-code-from integration"
-  builds:
-    name: runner / gorelease build
-    runs-on: ubuntu-latest
-    steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      -
-        name: Fetch all tags
-        run: git fetch --force --tags
-      -
-        name: Set up Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.19
-      -
-        name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v2
-        with:
-          # either 'goreleaser' (default) or 'goreleaser-pro'
-          distribution: goreleaser
-          version: latest
-          args: build --rm-dist
+        run: "make compose-up-integration-test" 
