@@ -1,6 +1,9 @@
 FROM debian:11
 
-WORKDIR /app
-ADD ./output/go-web-template_*_Linux-x86_64.tar.gz /app/
+COPY go-webapp-template /app/
+COPY config/config.yml /app/config/config.yml
+
 EXPOSE 8080
-CMD ["/app/go-web-template"]
+WORKDIR /app
+
+CMD ["/app/go-webapp-template"]

@@ -25,8 +25,8 @@
 go install github.com/swaggo/swag/cmd/swag@latest
 # sqlc 工具
 brew install sqlc
-# mockery 工具
-brew install mockery
+# mockgen 工具
+go install github.com/golang/mock/mockgen@v1.6.0
 # goreleaser 工具
 brew install goreleaser
 # golangci-lint

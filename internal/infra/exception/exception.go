@@ -1,6 +1,9 @@
 package exception
 
-import "net/http"
+import (
+	"errors"
+	"net/http"
+)
 
 // 定义自定义错误.
 type Error struct {
@@ -23,31 +26,44 @@ func (e *Error) Unwarp() error {
 	return e.err
 }
 
-func New(code int, err error) *Error {
+func NewError(code int, err error) *Error {
 	return &Error{code, err}
 }
 
 // http.StatusConflict.
 func Conflict(err error) *Error {
-	return New(http.StatusConflict, err)
+	return NewError(http.StatusConflict, err)
 }
 
 // http.StatusBadRequest.
 func BadRequest(err error) *Error {
-	return New(http.StatusBadRequest, err)
+	return NewError(http.StatusBadRequest, err)
 }
 
 // http.StatusUnauthorized.
 func Unauthorized(err error) *Error {
-	return New(http.StatusUnauthorized, err)
+	return NewError(http.StatusUnauthorized, err)
 }
 
 // http.StatusNotFound.
 func NotFound(err error) *Error {
-	return New(http.StatusNotFound, err)
+	return NewError(http.StatusNotFound, err)
 }
 
 // http.StatusInternalServerError.
 func InternalServer(err error) *Error {
-	return New(http.StatusInternalServerError, err)
+	return NewError(http.StatusInternalServerError, err)
+}
+
+// 错误比较.
+func Is(err error, target error) bool {
+	if err == nil && target == nil {
+		return true
+	}
+	var e1, e2 *Error
+	if errors.As(err, &e1) && errors.As(target, &e2) {
+		return e1.Code() == e2.Code()
+	} else {
+		return errors.Is(err, target)
+	}
 }

@@ -10,7 +10,7 @@ linters-settings:
     golint:
         min-confidence: 0.1
     goimports:
-        local-prefixes: github.com/sagikazarmark/modern-go-application
+        local-prefixes: github.com/ninehills/go-webapp-template
     tagliatelle:
       # Check the struck tag name case.
       case:
@@ -23,6 +23,15 @@ linters-settings:
           json: camel
           yaml: camel
           xml: camel
+    gci:
+        sections:
+            - standard # Standard section: captures all standard packages.
+            - default # Default section: contains all imports that could not be matched to another section type.
+            - prefix(github.com/ninehills/go-webapp-template) # Custom section: groups all imports with the specified Prefix.
+            - blank # Blank section: contains all blank imports. This section is not present unless explicitly enabled.
+            - dot # Dot section: contains all dot imports. This section is not present unless explicitly enabled.
+        skip-generated: true
+        custom-order: true
 
 linters:
     enable-all: true

@@ -1,37 +1,36 @@
 version: '3.9'
 services:
 
-  postgres:
-    container_name: postgres
-    image: postgres
-    volumes:
-      - pg-data:/var/lib/postgresql/data
+  mysql:
+    container_name: mysql
+    image: mysql:5.7
     environment:
-      POSTGRES_USER: 'user'
-      POSTGRES_PASSWORD: 'pass'
-      POSTGRES_DB: 'postgres'
+      MYSQL_ROOT_PASSWORD: 'pass'
+      MYSQL_DATABASE: 'app'
     ports:
-      - 5432:5432
+      - 3306:3306
+    volumes:
+      - type: bind
+        source: ./sql/schema
+        target: /docker-entrypoint-initdb.d
 
-  rabbitmq:
-    container_name: rabbitmq
-    image: rabbitmq:3.8.12-management
+  redis:
+    container_name: redis
+    image: redis:7
     ports:
-      - 5672:5672
-      - 15672:15672
+      - 6379:6379
 
   app:
-    build: .
     container_name: app
-    image: app
+    image: ghcr.io/ninehills/go-webapp-template:latest
     environment:
-      PG_URL: 'postgres://user:pass@postgres:5432/postgres'
-      RMQ_URL: 'amqp://guest:guest@rabbitmq:5672/'
+      MYSQL_DSN: 'root:pass@tcp(mysql:3306)/app?parseTime=true'
+      REDIS_URL: 'redis://redis:6379/1'
     ports:
       - 8080:8080
     depends_on:
-      - postgres
-      - rabbitmq
+      - mysql
+      - redis
 
   integration:
     build:
@@ -39,8 +38,7 @@ services:
       dockerfile: integration-test/Dockerfile
     container_name: integration
     image: integration
+    environment:
+      APP_HOST: "app:8080"
     depends_on:
       - app
-
-volumes:
-  pg-data:

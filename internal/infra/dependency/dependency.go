@@ -2,6 +2,7 @@ package dependency
 
 import (
 	"github.com/go-redis/redis/v8"
+
 	"github.com/ninehills/go-webapp-template/config"
 	"github.com/ninehills/go-webapp-template/internal/dao"
 	"github.com/ninehills/go-webapp-template/pkg/cache"

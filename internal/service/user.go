@@ -16,7 +16,7 @@ import (
 	"github.com/ninehills/go-webapp-template/pkg/password"
 )
 
-const userCacheKeyPrefix = "cache:user:"
+const UserCacheKeyPrefix = "cache:user:"
 
 // UserService 实现了 User 接口.
 type UserService struct {
@@ -76,7 +76,7 @@ func (s *UserService) Get(ctx context.Context, username string) (entity.User, er
 
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return entity.User{}, exception.Conflict(fmt.Errorf("user %s not found", username))
+			return entity.User{}, exception.NotFound(fmt.Errorf("user %s not found: %w", username, err))
 		}
 
 		return entity.User{}, fmt.Errorf("- UserService - Get - get failed: %w", err)
@@ -89,7 +89,7 @@ func (s *UserService) Get(ctx context.Context, username string) (entity.User, er
 func (s *UserService) CacheGet(ctx context.Context, username string) (entity.User, error) {
 	var user entity.User
 
-	key := userCacheKeyPrefix + username
+	key := UserCacheKeyPrefix + username
 
 	err := s.cache.Get(ctx, key, &user)
 	if err == nil {
@@ -189,7 +189,7 @@ func (s *UserService) Update(ctx context.Context, in entity.User) (entity.User, 
 	}
 
 	// 删除缓存
-	key := userCacheKeyPrefix + in.Username
+	key := UserCacheKeyPrefix + in.Username
 
 	err = s.cache.Del(ctx, key)
 	if err != nil {
@@ -217,7 +217,7 @@ func (s *UserService) Delete(ctx context.Context, username string) error {
 	}
 
 	// 删除缓存
-	key := userCacheKeyPrefix + username
+	key := UserCacheKeyPrefix + username
 
 	err = s.cache.Del(ctx, key)
 	if err != nil {

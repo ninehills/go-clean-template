@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+
 	"github.com/ninehills/go-webapp-template/internal/entity"
 	"github.com/ninehills/go-webapp-template/internal/infra/exception"
 	"github.com/ninehills/go-webapp-template/internal/infra/middleware"

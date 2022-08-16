@@ -1,10 +1,10 @@
 # 开源许可
 
-本项目基于众多开源项目二次开发。
+本项目包含如下开源软件。
 
 ## `evrone/go-clean-template`
 
-<https://github.dev/evrone/go-clean-template>
+<https://github.com/evrone/go-clean-template>
 
 ```text
 MIT License

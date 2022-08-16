@@ -241,7 +241,7 @@ const docTemplate = `{
         "entity.User": {
             "type": "object",
             "properties": {
-                "created_at": {
+                "createdAt": {
                     "description": "创建时间",
                     "type": "string",
                     "example": "2020-01-01T00:00:00Z"
@@ -261,7 +261,7 @@ const docTemplate = `{
                     "type": "integer",
                     "example": 1
                 },
-                "updated_at": {
+                "updatedAt": {
                     "description": "更新时间",
                     "type": "string",
                     "example": "2020-01-01T00:00:00Z"
@@ -293,13 +293,13 @@ const docTemplate = `{
         "http.createUserRequest": {
             "type": "object",
             "required": [
-                "confirm_password",
+                "confirmPassword",
                 "email",
                 "password",
                 "username"
             ],
             "properties": {
-                "confirm_password": {
+                "confirmPassword": {
                     "type": "string"
                 },
                 "description": {

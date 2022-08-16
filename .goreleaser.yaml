@@ -50,3 +50,5 @@ dockers:
     - "ghcr.io/ninehills/{{ .ProjectName }}:{{ .Tag }}-{{ .ShortCommit }}"
     - "ghcr.io/ninehills/{{ .ProjectName }}:{{ .Tag }}"
     - "ghcr.io/ninehills/{{ .ProjectName }}:latest"
+    extra_files:
+    - config/config.yml

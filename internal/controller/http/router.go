@@ -7,13 +7,14 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
 	"github.com/ninehills/go-webapp-template/internal/entity"
 	"github.com/ninehills/go-webapp-template/internal/infra/dependency"
 	"github.com/ninehills/go-webapp-template/internal/infra/middleware"
 	"github.com/ninehills/go-webapp-template/internal/service"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 // NewRouter -.

@@ -50,34 +50,23 @@ func healthCheck(attempts int) error {
 	return err
 }
 
-// HTTP POST: /translation/do-translate.
-func TestHTTPDoTranslate(t *testing.T) {
+// HTTP GET: /.
+func TestHTTPCreateUser(t *testing.T) {
 	t.Parallel()
 
 	body := `{
-		"destination": "en",
-		"original": "текст для перевода",
-		"source": "auto"
+		"username": "user",
+		"email": "user@example.com",
+		"description": "aaa",
+		"password": "pass@123",
+		"confirmPassword": "pass@123"
 	}`
 	Test(t,
-		Description("DoTranslate Success"),
-		Post(basePath+"/translation/do-translate"),
+		Description("Create User Success"),
+		Post(basePath+"/users"),
 		Send().Headers("Content-Type").Add("application/json"),
 		Send().Body().String(body),
 		Expect().Status().Equal(http.StatusOK),
-		Expect().Body().JSON().JQ(".translation").Equal("text for translation"),
-	)
-
-	body = `{
-		"destination": "en",
-		"original": "текст для перевода"
-	}`
-	Test(t,
-		Description("DoTranslate Fail"),
-		Post(basePath+"/translation/do-translate"),
-		Send().Headers("Content-Type").Add("application/json"),
-		Send().Body().String(body),
-		Expect().Status().Equal(http.StatusBadRequest),
-		Expect().Body().JSON().JQ(".error").Equal("invalid request body"),
+		Expect().Body().JSON().JQ(".username").Equal("user"),
 	)
 }

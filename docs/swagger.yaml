@@ -2,7 +2,7 @@ basePath: /.
 definitions:
   entity.User:
     properties:
-      created_at:
+      createdAt:
         description: 创建时间
         example: "2020-01-01T00:00:00Z"
         type: string
@@ -18,7 +18,7 @@ definitions:
         description: 用户状态，1代表启用，2代表禁用
         example: 1
         type: integer
-      updated_at:
+      updatedAt:
         description: 更新时间
         example: "2020-01-01T00:00:00Z"
         type: string
@@ -41,7 +41,7 @@ definitions:
     type: object
   http.createUserRequest:
     properties:
-      confirm_password:
+      confirmPassword:
         type: string
       description:
         maxLength: 140
@@ -60,7 +60,7 @@ definitions:
         minLength: 1
         type: string
     required:
-    - confirm_password
+    - confirmPassword
     - email
     - password
     - username

@@ -8,6 +8,7 @@ import (
 	"syscall"
 
 	"github.com/gin-gonic/gin"
+
 	"github.com/ninehills/go-webapp-template/config"
 	"github.com/ninehills/go-webapp-template/internal/controller/http"
 	"github.com/ninehills/go-webapp-template/internal/entity/validation"

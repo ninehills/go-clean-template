@@ -4,6 +4,7 @@ import (
 	"github.com/gin-contrib/requestid"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+
 	"github.com/ninehills/go-webapp-template/internal/infra/dependency"
 )
 
