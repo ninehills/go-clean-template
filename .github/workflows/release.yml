@@ -5,19 +5,17 @@ on:
     # run only against tags
     tags:
       - '*'
-    branches:
-      - main
-      - master
-      - 'releases/**'
 
 permissions:
   contents: write
-  # packages: write
+  packages: write
   # issues: write
 
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
+    env:
+      DOCKER_CLI_EXPERIMENTAL: "enabled"
     steps:
       -
         name: Checkout
@@ -32,6 +30,12 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: 1.19
+      - name: ghcr-login
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       -
         name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
