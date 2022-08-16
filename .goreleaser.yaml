@@ -1,0 +1,54 @@
+# This is an example .goreleaser.yml file with some sensible defaults.
+# Make sure to check the documentation at https://goreleaser.com
+dist: output/
+before:
+  hooks:
+    - go mod tidy
+    - go mod download
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ldflags: -X main.version="v{{.Version}}-{{.Date}}" 	-X main.commit="{{.FullCommit}}" -X main.date="{{.Date}}" -X main.branch="{{.Branch}}"
+    main: ./cmd/app
+
+archives:
+  -
+    format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+    name_template: "{{.ProjectName}}_{{.Version}}_{{.Os}}-{{.Arch}}"
+    replacements:
+      darwin: Darwin
+      linux: Linux
+      windows: Windows
+      386: i386
+      amd64: x86_64
+    files:
+      - config/config.yml
+      - LICENSE
+      - OPENSOURCE.md
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+dockers:
+  -
+    image_templates:
+    - "ghcr.io/ninehills/{{ .ProjectName }}:{{ .Tag }}-{{ .ShortCommit }}"
+    - "ghcr.io/ninehills/{{ .ProjectName }}:{{ .Tag }}"
+    - "ghcr.io/ninehills/{{ .ProjectName }}:latest"
+    extra_files:
+    - config/config.yml

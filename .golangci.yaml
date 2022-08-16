@@ -1,0 +1,50 @@
+run:
+    skip-dirs:
+        - .gen
+        - internal/dao
+
+    skip-files:
+        - ".*_gen\\.go$"
+
+linters-settings:
+    golint:
+        min-confidence: 0.1
+    goimports:
+        local-prefixes: github.com/ninehills/go-webapp-template
+    tagliatelle:
+      # Check the struck tag name case.
+      case:
+        # Use the struct field name to check the name of the struct tag.
+        # Default: false
+        use-field-name: true
+        rules:
+          # Any struct tag type can be used.
+          # Support string case: `camel`, `pascal`, `kebab`, `snake`, `goCamel`, `goPascal`, `goKebab`, `goSnake`, `upper`, `lower`
+          json: camel
+          yaml: camel
+          xml: camel
+    gci:
+        sections:
+            - standard # Standard section: captures all standard packages.
+            - default # Default section: contains all imports that could not be matched to another section type.
+            - prefix(github.com/ninehills/go-webapp-template) # Custom section: groups all imports with the specified Prefix.
+            - blank # Blank section: contains all blank imports. This section is not present unless explicitly enabled.
+            - dot # Dot section: contains all dot imports. This section is not present unless explicitly enabled.
+        skip-generated: true
+        custom-order: true
+
+linters:
+    enable-all: true
+    disable:
+        - funlen
+        - maligned
+        - wsl
+        - gomnd
+        - testpackage
+        - goerr113
+        - varnamelen
+        - exhaustivestruct
+        - exhaustruct
+        - ireturn
+        # Drives todos nuts
+        - godox

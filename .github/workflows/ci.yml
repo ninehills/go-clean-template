@@ -11,36 +11,6 @@ jobs:
       - name: golangci-lint
         uses: reviewdog/action-golangci-lint@v2
 
-  yamllint:
-    name: runner / yamllint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: reviewdog/action-yamllint@v1
-        with:
-          fail_on_error: true
-          reporter: github-pr-review
-          yamllint_flags: '-d "{extends: default, rules: {truthy: disable}}" .'
-
-  hadolint:
-    name: runner / hadolint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: reviewdog/action-hadolint@v1
-        with:
-          fail_on_error: true
-          reporter: github-pr-review
-
-  dotenv-linter:
-    name: runner / dotenv-linter
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: dotenv-linter/action-dotenv-linter@v2
-        with:
-          reporter: github-pr-review
-
   check-dependencies:
     name: runner / check-dependencies
     runs-on: ubuntu-latest
@@ -54,26 +24,31 @@ jobs:
         continue-on-error: true
 
   tests:
-    name: runner / tests
+    name: runner / unit-tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v2
         with:
-          go-version: 1.17
+          go-version: 1.19
 
       - name: Unit Tests
-        run: "go test \
-          -v \
-          -race \
-          -covermode atomic \
-          -coverprofile=coverage.txt \
-          ./internal/..."
+        run: "make test"
+
       - name: Upload coverage report
         run: bash <(curl -s https://codecov.io/bash)
 
+  integration_tests:
+    name: runner / integration tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v2
+        with:
+          go-version: 1.19
+
+      - name: Install goreleaser
+        run: "go install github.com/goreleaser/goreleaser@latest"
+
       - name: Integration tests
-        run: "docker-compose up \
-          --build \
-          --abort-on-container-exit \
-          --exit-code-from integration"
+        run: "make compose-up-integration-test" 
