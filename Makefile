@@ -13,7 +13,7 @@ compose-up: ### Run docker-compose
 	docker-compose up --build -d mysql redis && docker-compose logs -f
 .PHONY: compose-up
 
-compose-up-integration-test: build ### Run docker-compose with integration test
+compose-up-integration-test: build-image ### Run docker-compose with integration test
 	docker-compose up --build --abort-on-container-exit --exit-code-from integration
 .PHONY: compose-up-integration-test
 
