@@ -53,9 +53,13 @@ sqlc: ### Run sqlc generate
 	python3 ./sql/custom_interface.py
 .PHONY: sqlc
 
-build: ### only build
-	goreleaser release --snapshot --rm-dist
+build:
+	go build -o dist/go-webapp-template cmd/app/main.go
 .PHONY: build
+
+build-image: ### only build
+	goreleaser release --snapshot --rm-dist
+.PHONY: build-image
 
 release: ## release
 	goreleaser release --rm-dist

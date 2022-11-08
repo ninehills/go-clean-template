@@ -42,3 +42,5 @@ type CreateUserRequest struct {
 }
 
 type CreateUserResponse entity.User
+
+type DeleteUserResponse struct{}

@@ -7,12 +7,6 @@
 - 数据库 Driver: [MySQL](https://github.com/go-sql-driver/mysql)
 - 缓存：[Redis](https://github.com/go-redis/redis/v8)
 
-解析来的改进工作：
-
-- 增加 Adapter 接口访问外部数据的示例
-- 解决日志复杂的问题，采用中心的 logrus 方案
-- 增加对 DB 的 trace 功能
-
 ## 定时维护
 
 本项目会定时更新:
@@ -187,10 +181,10 @@ use go_webapp;
 
 修改 `.goreleaser.yaml` 中 `dockers` 段中的镜像仓库地址。
 
-
 ### 编译
 
-make build 会根据 git tag 历史自动生成下一个 tag 的版本号，名称为 `{next-tag}-next`
+本地编译： make build
+构建多架构以及Docker镜像： make build-image ，会自动根据tag生成下一个版本的next版本。
 
 ### 发布
 

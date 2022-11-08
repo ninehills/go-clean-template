@@ -3,11 +3,11 @@ package mysql
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"time"
 
-	// MySQL driver.
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/go-sql-driver/mysql"
+	"github.com/ninehills/go-webapp-template/pkg/logger"
+	"github.com/qustavo/sqlhooks/v2"
 )
 
 const (
@@ -28,7 +28,7 @@ type MySQL struct {
 }
 
 // New -.
-func New(dsn string, opts ...Option) (*MySQL, error) {
+func New(l logger.Logger, dsn string, opts ...Option) (*MySQL, error) {
 	ms := &MySQL{
 		maxOpenConns:    defaultMaxOpenConns,
 		maxIdleConns:    defaultMaxIdleConns,
@@ -40,10 +40,13 @@ func New(dsn string, opts ...Option) (*MySQL, error) {
 		opt(ms)
 	}
 
+	// Register hook
+	sql.Register("mysqllog", sqlhooks.Wrap(&mysql.MySQLDriver{}, NewHook(l)))
+
 	// Open database
 	var err error
 
-	ms.DB, err = sql.Open("mysql", dsn)
+	ms.DB, err = sql.Open("mysqllog", dsn)
 	if err != nil {
 		return nil, fmt.Errorf("mysql - NewMySQL - Open mysql database failed: %w", err)
 	}
@@ -60,7 +63,7 @@ func New(dsn string, opts ...Option) (*MySQL, error) {
 			break
 		}
 
-		log.Printf("mysql - NewMySQL - Trying to connect, attempts left: %d", i)
+		l.Infof("mysql - NewMySQL - Trying to connect, attempts left: %d", i)
 		time.Sleep(connAttemptPeriod)
 		i--
 	}

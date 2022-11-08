@@ -75,13 +75,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/http.listUserResponse"
+                            "$ref": "#/definitions/httpv1.ListUserResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/exception.Response"
+                            "$ref": "#/definitions/httpv1.ErrorResponse"
                         }
                     }
                 }
@@ -106,7 +106,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/http.createUserRequest"
+                            "$ref": "#/definitions/httpv1.CreateUserRequest"
                         }
                     }
                 ],
@@ -114,19 +114,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.User"
+                            "$ref": "#/definitions/httpv1.CreateUserResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/exception.Response"
+                            "$ref": "#/definitions/httpv1.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/exception.Response"
+                            "$ref": "#/definitions/httpv1.ErrorResponse"
                         }
                     }
                 }
@@ -156,13 +156,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.User"
+                            "$ref": "#/definitions/httpv1.GetUserResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/exception.Response"
+                            "$ref": "#/definitions/httpv1.ErrorResponse"
                         }
                     }
                 }
@@ -190,13 +190,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.User"
+                            "$ref": "#/definitions/httpv1.UpdateUserResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/exception.Response"
+                            "$ref": "#/definitions/httpv1.ErrorResponse"
                         }
                     }
                 }
@@ -224,13 +224,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.User"
+                            "$ref": "#/definitions/httpv1.DeleteUserResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/exception.Response"
+                            "$ref": "#/definitions/httpv1.ErrorResponse"
                         }
                     }
                 }
@@ -273,24 +273,7 @@ const docTemplate = `{
                 }
             }
         },
-        "exception.Response": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "string",
-                    "example": "Conflict"
-                },
-                "message": {
-                    "type": "string",
-                    "example": "message"
-                },
-                "requestId": {
-                    "type": "string",
-                    "example": "b5953bf0-9f15-4c42-afb4-1c125b40d7ce"
-                }
-            }
-        },
-        "http.createUserRequest": {
+        "httpv1.CreateUserRequest": {
             "type": "object",
             "required": [
                 "confirmPassword",
@@ -324,7 +307,97 @@ const docTemplate = `{
                 }
             }
         },
-        "http.listUserResponse": {
+        "httpv1.CreateUserResponse": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "description": "创建时间",
+                    "type": "string",
+                    "example": "2020-01-01T00:00:00Z"
+                },
+                "description": {
+                    "description": "备注",
+                    "type": "string",
+                    "example": "twfbmbsr"
+                },
+                "email": {
+                    "description": "邮箱",
+                    "type": "string",
+                    "example": "xxx@example.com"
+                },
+                "status": {
+                    "description": "用户状态，1代表启用，2代表禁用",
+                    "type": "integer",
+                    "example": 1
+                },
+                "updatedAt": {
+                    "description": "更新时间",
+                    "type": "string",
+                    "example": "2020-01-01T00:00:00Z"
+                },
+                "username": {
+                    "description": "用户的名称",
+                    "type": "string",
+                    "example": "twfbmbsr"
+                }
+            }
+        },
+        "httpv1.DeleteUserResponse": {
+            "type": "object"
+        },
+        "httpv1.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "example": "Conflict"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "message"
+                },
+                "requestId": {
+                    "type": "string",
+                    "example": "b5953bf0-9f15-4c42-afb4-1c125b40d7ce"
+                }
+            }
+        },
+        "httpv1.GetUserResponse": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "description": "创建时间",
+                    "type": "string",
+                    "example": "2020-01-01T00:00:00Z"
+                },
+                "description": {
+                    "description": "备注",
+                    "type": "string",
+                    "example": "twfbmbsr"
+                },
+                "email": {
+                    "description": "邮箱",
+                    "type": "string",
+                    "example": "xxx@example.com"
+                },
+                "status": {
+                    "description": "用户状态，1代表启用，2代表禁用",
+                    "type": "integer",
+                    "example": 1
+                },
+                "updatedAt": {
+                    "description": "更新时间",
+                    "type": "string",
+                    "example": "2020-01-01T00:00:00Z"
+                },
+                "username": {
+                    "description": "用户的名称",
+                    "type": "string",
+                    "example": "twfbmbsr"
+                }
+            }
+        },
+        "httpv1.ListUserResponse": {
             "type": "object",
             "properties": {
                 "pageNo": {
@@ -341,6 +414,41 @@ const docTemplate = `{
                 },
                 "totalCount": {
                     "type": "integer"
+                }
+            }
+        },
+        "httpv1.UpdateUserResponse": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "description": "创建时间",
+                    "type": "string",
+                    "example": "2020-01-01T00:00:00Z"
+                },
+                "description": {
+                    "description": "备注",
+                    "type": "string",
+                    "example": "twfbmbsr"
+                },
+                "email": {
+                    "description": "邮箱",
+                    "type": "string",
+                    "example": "xxx@example.com"
+                },
+                "status": {
+                    "description": "用户状态，1代表启用，2代表禁用",
+                    "type": "integer",
+                    "example": 1
+                },
+                "updatedAt": {
+                    "description": "更新时间",
+                    "type": "string",
+                    "example": "2020-01-01T00:00:00Z"
+                },
+                "username": {
+                    "description": "用户的名称",
+                    "type": "string",
+                    "example": "twfbmbsr"
                 }
             }
         }

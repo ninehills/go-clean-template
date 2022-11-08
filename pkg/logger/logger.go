@@ -148,7 +148,7 @@ func New(config Config) Logger {
 		EnvironmentOverrideColors: true,
 		FullTimestamp:             true,
 	})
-	// 因为嵌套了一层，caller 无法获取真正的调用者，此处注释，后续寻找方法
+	// FIXME: 因为嵌套了一层，caller 无法获取真正的调用者，此处注释，后续寻找方法
 	// 参见 https://github.com/sirupsen/logrus/pull/989
 	// l.SetReportCaller(true)
 	switch config.Format {

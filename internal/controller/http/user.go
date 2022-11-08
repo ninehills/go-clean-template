@@ -122,7 +122,7 @@ func (r *userRoutes) updateUser(c *gin.Context) {
 // @Param		username	query	string	true	"Username"
 // @Param		status		query	int32	true	"Status 1/2"
 // @Produce     json
-// @Success     200 {object} httpv1.ListUsersResponse
+// @Success     200 {object} httpv1.ListUserResponse
 // @Failure     500 {object} httpv1.ErrorResponse
 // @Router      /v1/users [get].
 func (r *userRoutes) ListUsers(c *gin.Context) {
@@ -170,7 +170,7 @@ func (r *userRoutes) ListUsers(c *gin.Context) {
 // @Tags  	    user
 // @Accept      json
 // @Produce     json
-// @Param       request body createUserRequest true "Set up user"
+// @Param       request body httpv1.CreateUserRequest true "Set up user"
 // @Success     200 {object} httpv1.CreateUserResponse
 // @Failure     400 {object} httpv1.ErrorResponse
 // @Failure     500 {object} httpv1.ErrorResponse
