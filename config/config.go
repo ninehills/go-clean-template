@@ -82,10 +82,6 @@ func LoadConfig(cfgFile string) (*Config, error) {
 		return cfg, fmt.Errorf("config error: %w", err)
 	}
 
-	err = cleanenv.ReadEnv(c)
-	if err != nil {
-		return cfg, fmt.Errorf("cleanv.ReadEnv faild : %w", err)
-	}
 	// 更新全局的cfg
 	cfgLock.Lock()
 	cfg = c

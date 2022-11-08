@@ -1,4 +1,4 @@
-FROM debian:11
+FROM ubuntu:22.04
 
 COPY go-webapp-template /app/
 COPY config/config.yml /app/config/config.yml

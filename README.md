@@ -1,29 +1,39 @@
 # Go 网站应用模版
 
-[![License](https://img.shields.io/github/license/ninehills/go-webapp-template.svg)](https://github.com/ninehills/go-webapp-template/blob/master/LICENSE)
-[![Release](https://img.shields.io/github/v/release/evrone/go-clean-template.svg)](https://github.com/ninehills/go-webapp-template/releases/)
-[![codecov](https://codecov.io/gh/evrone/go-clean-template/branch/master/graph/badge.svg?token=XE3E0X3EVQ)](https://codecov.io/gh/evrone/go-clean-template)
+本工程主要参考洋葱架构理念，提供开箱即用且易扩展的 Go Web 开发框架。主要技术选型如下：
 
-本工程参考了 <https://github.dev/evrone/go-clean-template> 的模版。其主要依赖的库如下：
+- HTTP 服务框架: [Gin](https://github.com/gin-gonic/gin)
+- 数据库 DAO 层: [sqlc](https://sqlc.dev/)
+- 数据库 Driver: [MySQL](https://github.com/go-sql-driver/mysql)
 
-- HTTP Framework: [Gin](https://github.com/gin-gonic/gin)
-- SQL: [sqlc](https://sqlc.dev/)
-- Database: [MySQL](https://github.com/go-sql-driver/mysql)
 
-提供两套接口：
+解析来的改进工作：
 
-- HTTP API
-- GRPC API
+- 增加 Adapter 接口访问外部数据的示例
+- 将 request/response 增加到 apis/httpv1/ 中
+- 将 controller 按照不同的版本进行区分
+- 将 depends 归纳集中管理，不再单独赋值
+- 解决日志复杂的问题，采用中心的 logrus 方案
+- 增加对DB的trace 功能
+
+## 定时维护
+
+本项目会定时更新:
+
+- go.mod 中各依赖包升级到最新稳定版本。
+- 依赖工具升级到最新稳定版本。
 
 ## 依赖工具安装
 
-首先安装 go >= 1.17 版本，然后安装以下依赖工具：
+首先安装 go >= 1.17 版本（推荐使用 Go 1.19 版本），然后安装以下依赖工具：
 
 ```bash
+# （仅用于国内环境，配置 Go 下载代理）
+export GOPROXY=https://goproxy.cn
 # 如下工具也可以使用 homebrew 或者直接下载对应的 binary 安装。
 # swagger 命令行工具：
 go install github.com/swaggo/swag/cmd/swag@latest
-# sqlc 工具
+# sqlc 工具，注意 MacOS 上使用 brew 安装，其他系统请自行按照对应文档安装
 brew install sqlc
 # mockgen 工具
 go install github.com/golang/mock/mockgen@v1.6.0
@@ -38,7 +48,7 @@ brew install golangci-lint
 本地开发
 
 ```sh
-# Postgres, RabbitMQ
+# 只启动 MySQL / Redis 依赖服务
 $ make compose-up
 # Run app with migrations
 $ make run
@@ -48,6 +58,7 @@ $ make run
 
 ```sh
 # DB, app + migrations, integration tests
+# 执行之前，需要手动删除历史镜像： docker rm -f integration app redis mysql
 $ make compose-up-integration-test
 ```
 
@@ -146,6 +157,8 @@ MVC 中的控制层，服务的路由用同样的风格进行编写
 
 ## 开发相关
 
+### 手动设定数据库
+
 ```bash
 # 本地测试数据库的搭建
 
@@ -160,3 +173,22 @@ use go_webapp;
 # 执行sql/schema/ 下的建表语句
 
 ```
+
+### 自定义镜像
+
+基础镜像：
+
+没有选择 distroless ，而是使用 ubuntu:22.04，可以自行替换 Dockerfile 中的基础镜像。
+
+镜像仓库：
+
+修改 `.goreleaser.yaml` 中 `dockers` 段中的镜像仓库地址。
+
+
+### 编译
+
+make build 会根据 git tag 历史自动生成下一个 tag 的版本号，名称为 `{next-tag}-next`
+
+### 发布
+
+在release 之前，需要使用git tag 来打上版本号，然后再执行 `make release` 来发布，此时同时也会上传到镜像仓库。

@@ -46,9 +46,38 @@ changelog:
       - '^test:'
 dockers:
   -
+    goos: linux
+    goarch: amd64
     image_templates:
-    - "ghcr.io/ninehills/{{ .ProjectName }}:{{ .Tag }}-{{ .ShortCommit }}"
-    - "ghcr.io/ninehills/{{ .ProjectName }}:{{ .Tag }}"
+    - "ghcr.io/ninehills/{{ .ProjectName }}:{{ .Version }}-{{ .ShortCommit }}"
+    - "ghcr.io/ninehills/{{ .ProjectName }}:{{ .Version }}"
     - "ghcr.io/ninehills/{{ .ProjectName }}:latest"
+    build_flag_templates:
+    - "--pull"
+    - "--label=org.opencontainers.image.created={{.Date}}"
+    - "--label=org.opencontainers.image.title={{.ProjectName}}"
+    - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+    - "--label=org.opencontainers.image.version={{.Version}}"
+    - "--platform=linux/amd64"
     extra_files:
     - config/config.yml
+    - LICENSE
+    - OPENSOURCE.md
+  -
+    goos: linux
+    goarch: arm64
+    image_templates:
+    - "ghcr.io/ninehills/{{ .ProjectName }}:{{ .Version }}-{{ .ShortCommit }}-arm64"
+    - "ghcr.io/ninehills/{{ .ProjectName }}:{{ .Version }}-arm64"
+    - "ghcr.io/ninehills/{{ .ProjectName }}:latest-arm64"
+    build_flag_templates:
+    - "--pull"
+    - "--label=org.opencontainers.image.created={{.Date}}"
+    - "--label=org.opencontainers.image.title={{.ProjectName}}"
+    - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+    - "--label=org.opencontainers.image.version={{.Version}}"
+    - "--platform=linux/arm64"
+    extra_files:
+    - config/config.yml
+    - LICENSE
+    - OPENSOURCE.md
