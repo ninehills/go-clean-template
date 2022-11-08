@@ -5,16 +5,13 @@
 - HTTP 服务框架: [Gin](https://github.com/gin-gonic/gin)
 - 数据库 DAO 层: [sqlc](https://sqlc.dev/)
 - 数据库 Driver: [MySQL](https://github.com/go-sql-driver/mysql)
-
+- 缓存：[Redis](https://github.com/go-redis/redis/v8)
 
 解析来的改进工作：
 
 - 增加 Adapter 接口访问外部数据的示例
-- 将 request/response 增加到 apis/httpv1/ 中
-- 将 controller 按照不同的版本进行区分
-- 将 depends 归纳集中管理，不再单独赋值
 - 解决日志复杂的问题，采用中心的 logrus 方案
-- 增加对DB的trace 功能
+- 增加对 DB 的 trace 功能
 
 ## 定时维护
 
@@ -118,6 +115,12 @@ ENV=testing make integration-test
 
 # 本地环境，不加ENV
 ```
+
+## `apis`
+
+存放各种 API 规范（HTTP、GRPC 等），目前只有 HTTP API。
+
+apis 是对外的的接口。
 
 ## `internal/app`
 
