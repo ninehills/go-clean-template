@@ -6,8 +6,8 @@ CREATE TABLE IF NOT EXISTS `user` (
     `email` varchar(255) UNIQUE KEY NOT NULL DEFAULT '' COMMENT '邮箱',
     `password` varchar(255) NOT NULL DEFAULT '' COMMENT '加密后的密码',
     `description` text NOT NULL COMMENT '备注',
-    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+    `created_at` datetime NOT NULL COMMENT '创建时间',
+    `updated_at` datetime NOT NULL COMMENT '更新时间',
     INDEX(`status`),
     INDEX(`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '用户表';

@@ -9,9 +9,9 @@ LIMIT ?, ?;
 
 -- name: CreateUser :exec
 INSERT INTO user (
-  username, status, email, password, description
+  username, status, email, password, description, created_at, updated_at
 ) VALUES (
-  ?, ?, ?, ?, ?
+  ?, ?, ?, ?, ?, UTC_TIMESTAMP(), UTC_TIMESTAMP()
 );
 
 -- name: UpdateUser :exec
@@ -21,7 +21,7 @@ SET
  email = coalesce(sqlc.narg('email'), email),
  password = coalesce(sqlc.narg('password'), password),
  description = coalesce(sqlc.narg('description'), description),
- updated_at = NOW()
+ updated_at = UTC_TIMESTAMP()
 WHERE username = sqlc.arg('username');
 
 -- name: DeleteUser :exec
