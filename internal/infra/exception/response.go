@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-contrib/requestid"
 	"github.com/gin-gonic/gin"
+
 	"github.com/ninehills/go-webapp-template/apis/httpv1"
 )
 

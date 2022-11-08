@@ -6,8 +6,9 @@ import (
 	"time"
 
 	"github.com/go-sql-driver/mysql"
-	"github.com/ninehills/go-webapp-template/pkg/logger"
 	"github.com/qustavo/sqlhooks/v2"
+
+	"github.com/ninehills/go-webapp-template/pkg/logger"
 )
 
 const (
