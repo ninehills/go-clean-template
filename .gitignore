@@ -22,4 +22,6 @@
 vendor/
 dist/
 output/
+
+# OS generated files
 .DS_Store

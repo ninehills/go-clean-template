@@ -13,7 +13,7 @@ compose-up: ### Run docker-compose
 	docker-compose up --build -d mysql redis && docker-compose logs -f
 .PHONY: compose-up
 
-compose-up-integration-test: build ### Run docker-compose with integration test
+compose-up-integration-test: build-image ### Run docker-compose with integration test
 	docker-compose up --build --abort-on-container-exit --exit-code-from integration
 .PHONY: compose-up-integration-test
 
@@ -53,9 +53,13 @@ sqlc: ### Run sqlc generate
 	python3 ./sql/custom_interface.py
 .PHONY: sqlc
 
-build: ### only build
-	goreleaser release --snapshot --rm-dist
+build:
+	go build -o dist/go-webapp-template cmd/app/main.go
 .PHONY: build
+
+build-image: ### only build
+	goreleaser release --snapshot --rm-dist
+.PHONY: build-image
 
 release: ## release
 	goreleaser release --rm-dist

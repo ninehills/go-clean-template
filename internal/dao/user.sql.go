@@ -12,9 +12,9 @@ import (
 
 const createUser = `-- name: CreateUser :exec
 INSERT INTO user (
-  username, status, email, password, description
+  username, status, email, password, description, created_at, updated_at
 ) VALUES (
-  ?, ?, ?, ?, ?
+  ?, ?, ?, ?, ?, UTC_TIMESTAMP(), UTC_TIMESTAMP()
 )
 `
 
@@ -118,7 +118,7 @@ SET
  email = coalesce(?, email),
  password = coalesce(?, password),
  description = coalesce(?, description),
- updated_at = NOW()
+ updated_at = UTC_TIMESTAMP()
 WHERE username = ?
 `
 

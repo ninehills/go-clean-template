@@ -1,6 +1,5 @@
 version: '3.9'
 services:
-
   mysql:
     container_name: mysql
     image: mysql:5.7
@@ -16,7 +15,7 @@ services:
 
   redis:
     container_name: redis
-    image: redis:7
+    image: redis:6
     ports:
       - 6379:6379
 
@@ -25,7 +24,7 @@ services:
     image: ghcr.io/ninehills/go-webapp-template:latest
     environment:
       MYSQL_DSN: 'root:pass@tcp(mysql:3306)/app?parseTime=true'
-      REDIS_URL: 'redis://redis:6379/1'
+      REDIS_URL: 'redis://redis:6379/0'
     ports:
       - 8080:8080
     depends_on:

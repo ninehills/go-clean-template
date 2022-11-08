@@ -13,10 +13,10 @@ log:
   noColor: false
 
 mysql:
-  dsn: "go_webapp:go_webapp@tcp(127.0.0.1:3306)/go_webapp?parseTime=true"
+  dsn: "root:pass@tcp(127.0.0.1:3306)/app?parseTime=true&timeout=30s&readTimeout=30s&writeTimeout=30s"
   connMaxLifetime: 180
-  maxOpenConns: 100
-  maxIdleConns: 100
+  maxOpenConns: 10
+  maxIdleConns: 10
 
 redis:
-  url: "redis://localhost:6379/1"
+  url: "redis://localhost:6379/0"

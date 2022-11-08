@@ -50,6 +50,7 @@ func NewDependency(cfg *config.Config) *Dependency {
 
 	// 初始化 MySQL 数据库
 	ms, err := mysql.New(
+		l,
 		cfg.MySQL.DSN,
 		mysql.ConnMaxLifetime(cfg.MySQL.ConnMaxLifetime),
 		mysql.MaxOpenConns(cfg.MySQL.MaxOpenConns),
