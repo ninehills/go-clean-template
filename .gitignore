@@ -25,3 +25,4 @@ output/
 
 # OS generated files
 .DS_Store
+coverage.txt

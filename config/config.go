@@ -28,42 +28,42 @@ type (
 
 	// App -.
 	App struct {
-		Name      string `env-required:"true" yaml:"name"    env:"APP_NAME"`
-		Debug     bool   `yaml:"debug" env:"APP_DEBUG"`
-		SuperUser string `env-required:"true" yaml:"superUser" env:"APP_SUPER_USER"`
+		Name      string `env:"APP_NAME"       env-required:"true" yaml:"name"`
+		Debug     bool   `env:"APP_DEBUG"      yaml:"debug"`
+		SuperUser string `env:"APP_SUPER_USER" env-required:"true" yaml:"superUser"`
 		// Please changed when app first started.
-		SuperPassword string `env-required:"true" yaml:"superPassword" env:"APP_SUPER_PASSWORD"`
+		SuperPassword string `env:"APP_SUPER_PASSWORD" env-required:"true" yaml:"superPassword"`
 	}
 
 	// HTTP -.
 	HTTP struct {
-		Port string `env-required:"true" yaml:"port" env:"HTTP_PORT"`
+		Port string `env:"HTTP_PORT" env-required:"true" yaml:"port"`
 	}
 
 	// Log -.
 	Log struct {
 		// debug, info, warn, error
-		Level string `env-required:"true" yaml:"level"   env:"LOG_LEVEL"`
+		Level string `env:"LOG_LEVEL" env-required:"true" yaml:"level"`
 		// output format, json/text
-		Format string `env-required:"true" yaml:"format"  env:"LOG_FORMAT"`
+		Format string `env:"LOG_FORMAT" env-required:"true" yaml:"format"`
 		// nocolor, default false
-		NoColor bool `yaml:"noColor" env:"LOG_NOCOLOR"`
+		NoColor bool `env:"LOG_NOCOLOR" yaml:"noColor"`
 	}
 
 	// MySQL -.
 	MySQL struct {
 		// https://github.com/go-sql-driver/mysql#dsn-data-source-name
-		DSN string `env-required:"true"                 env:"MYSQL_DSN"`
+		DSN string `env:"MYSQL_DSN" env-required:"true"`
 		// https://github.com/go-sql-driver/mysql#important-settings
-		ConnMaxLifetime int `env-required:"true" yaml:"connMaxLifetime" env:"MYSQL_CONN_MAX_LIFETIME"`
-		MaxOpenConns    int `env-required:"true" yaml:"maxOpenConns"     env:"MYSQL_MAX_OPEN_CONNS"`
-		MaxIdleConns    int `env-required:"true" yaml:"maxIdleConns"     env:"MYSQL_MAX_IDLE_CONNS"`
+		ConnMaxLifetime int `env:"MYSQL_CONN_MAX_LIFETIME" env-required:"true" yaml:"connMaxLifetime"`
+		MaxOpenConns    int `env:"MYSQL_MAX_OPEN_CONNS"    env-required:"true" yaml:"maxOpenConns"`
+		MaxIdleConns    int `env:"MYSQL_MAX_IDLE_CONNS"    env-required:"true" yaml:"maxIdleConns"`
 	}
 
 	// Redis -.
 	Redis struct {
 		// "redis://<user>:<pass>@localhost:6379/<db>"
-		URL string `env-required:"true"                            env:"REDIS_URL"`
+		URL string `env:"REDIS_URL" env-required:"true"`
 	}
 )
 

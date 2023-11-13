@@ -16,21 +16,21 @@ const (
 // User Entity.
 type User struct {
 	// DB id.
-	ID int64 `json:"-" example:"1"`
+	ID int64 `example:"1" json:"-"`
 	// 用户的名称
-	Username string `json:"username" example:"twfbmbsr"`
+	Username string `example:"twfbmbsr" json:"username"`
 	// 用户状态，1代表启用，2代表禁用
-	Status int32 `json:"status" example:"1"`
+	Status int32 `example:"1" json:"status"`
 	// 邮箱
-	Email string `json:"email" example:"xxx@example.com"`
+	Email string `example:"xxx@example.com" json:"email"`
 	// 加密后的密码，并不输出到前端
 	Password string `json:"-"`
 	// 备注
-	Description string `json:"description" example:"twfbmbsr"`
+	Description string `example:"twfbmbsr" json:"description"`
 	// 创建时间
-	CreatedAt time.Time `json:"createdAt" example:"2020-01-01T00:00:00Z"`
+	CreatedAt time.Time `example:"2020-01-01T00:00:00Z" json:"createdAt"`
 	// 更新时间
-	UpdatedAt time.Time `json:"updatedAt" example:"2020-01-01T00:00:00Z"`
+	UpdatedAt time.Time `example:"2020-01-01T00:00:00Z" json:"updatedAt"`
 }
 
 func (u *User) IsActive() bool {

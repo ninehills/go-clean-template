@@ -30,7 +30,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v2
         with:
-          go-version: 1.19
+          go-version: 1.21
 
       - name: Unit Tests
         run: "make test"
@@ -45,10 +45,10 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v2
         with:
-          go-version: 1.19
+          go-version: 1.21
 
       - name: Install goreleaser
         run: "go install github.com/goreleaser/goreleaser@latest"
 
       - name: Integration tests
-        run: "make compose-up-integration-test" 
+        run: "make compose-up-integration-test"

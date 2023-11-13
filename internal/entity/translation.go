@@ -4,8 +4,8 @@ package entity
 
 // Translation -.
 type Translation struct {
-	Source      string `json:"source"       example:"auto"`
-	Destination string `json:"destination"  example:"en"`
-	Original    string `json:"original"     example:"текст для перевода"`
-	Translation string `json:"translation"  example:"text for translation"`
+	Source      string `example:"auto"                               json:"source"`
+	Destination string `example:"en"                                 json:"destination"`
+	Original    string `example:"текст для перевода"                 json:"original"`
+	Translation string `example:"text for translation"               json:"translation"`
 }

@@ -34,6 +34,10 @@ linter-golangci: ### check by golangci linter
 	golangci-lint run
 .PHONY: linter-golangci
 
+linter-golangci-fix: ### check by golangci linter
+	golangci-lint run --fix
+.PHONY: linter-golangci-fix
+
 test: ### run test
 	go test -v -cover -race -covermode atomic -coverprofile=coverage.txt ./internal/...
 .PHONY: test

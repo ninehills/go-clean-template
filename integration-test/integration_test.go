@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	. "github.com/Eun/go-hit"
+	. "github.com/Eun/go-hit" //nolint: revive
 )
 
 const (

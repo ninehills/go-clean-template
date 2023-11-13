@@ -1,6 +1,6 @@
 -- User 用户表
 CREATE TABLE IF NOT EXISTS `user` (
-    `id` bigint unsigned PRIMARY KEY  NOT NULL AUTO_INCREMENT COMMENT '主键id',
+    `id` bigint PRIMARY KEY  NOT NULL AUTO_INCREMENT COMMENT '主键id',
     `username` varchar(64) UNIQUE KEY NOT NULL DEFAULT '' COMMENT '用户的名称',
     `status` int NOT NULL DEFAULT 1 COMMENT '用户状态，1=正常，2=禁用',
     `email` varchar(255) UNIQUE KEY NOT NULL DEFAULT '' COMMENT '邮箱',

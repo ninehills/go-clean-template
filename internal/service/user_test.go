@@ -133,7 +133,7 @@ func TestUserCreate(t *testing.T) {
 			tc.mock(tc.id)
 			res, err := userService.Create(context.Background(), entity.User{Username: tc.id})
 			require.EqualValues(t, res, tc.res)
-			require.True(t, exception.Is(err, tc.err))
+			require.True(t, exception.Is(err, tc.err)) //nolint:testifylint
 		})
 	}
 }
@@ -182,7 +182,7 @@ func TestUserGet(t *testing.T) {
 			tc.mock(tc.id)
 			res, err := userService.Get(context.Background(), tc.id)
 			require.EqualValues(t, res, tc.res)
-			require.True(t, exception.Is(err, tc.err))
+			require.True(t, exception.Is(err, tc.err)) //nolint:testifylint
 		})
 	}
 }
@@ -249,7 +249,7 @@ func TestUserCacheGet(t *testing.T) {
 			tc.mock(tc.id)
 			res, err := userService.CacheGet(context.Background(), tc.id)
 			require.EqualValues(t, res, tc.res)
-			require.True(t, exception.Is(err, tc.err))
+			require.True(t, exception.Is(err, tc.err)) //nolint:testifylint
 		})
 	}
 }

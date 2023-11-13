@@ -21,7 +21,7 @@ func NewHook(l logger.Logger) *Hook {
 	}
 }
 
-func (h *Hook) Before(ctx context.Context, query string, args ...interface{}) (context.Context, error) {
+func (h *Hook) Before(ctx context.Context, _ string, _ ...interface{}) (context.Context, error) {
 	return context.WithValue(ctx, ctxKeySQLStarted{}, time.Now()), nil
 }
 
